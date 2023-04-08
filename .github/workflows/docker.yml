@@ -1,0 +1,78 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ main ]
+
+env:
+  NODE_ENV: production
+  PORT: 3000
+  EMAIL_PORT: 465
+  DB_PORT: 27017
+  IMAGE_NAME: cr.yandex/${{ secrets.CR_REGISTRY }}/${{ secrets.CR_REPO }}:latest
+
+  PTH: ${{ secrets.PTH }}
+  EMAIL_USER: ${{ secrets.EMAIL_USER }}
+  EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+  EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+  EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+  HOST: ${{ secrets.HOST }}
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      # initialize repo
+      - uses: actions/checkout@v2
+
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        env:
+          CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
+          CR_REPOSITORY: ${{ secrets.CR_REPO }}
+          IMAGE_TAG: ${{ github.sha }}
+          NODE_ENV: ${{ env.NODE_ENV }}
+          PORT: ${{ env.PORT }}
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest
+
+      - name: Deploy COI VM
+        id: deploy-coi
+        uses: yc-actions/yc-coi-deploy@v1
+        env:
+          YC_VM_USERNAME: ${{ secrets.YC_VM_USERNAME }}
+          YC_VM_SSH: ${{ secrets.YC_VM_SSH }}
+          CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
+          CR_REPOSITORY: ${{ secrets.CR_REPO }}
+          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          NODE_ENV: ${{ env.NODE_ENV }}
+          PORT: ${{ env.PORT }}
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          folder-id: ${{ secrets.YC_FOLDER_ID }}
+          vm-name: ${{ secrets.YC_VM_NAME }}
+          vm-service-account-name: ${{ secrets.YC_VM_USERNAME }}
+          vm-subnet-id: ${{ secrets.YC_VM_SUBNET_ID }}
+          vm-cores: 2
+          vm-memory: 2GB
+          vm-core-fraction: 5
+          vm-disk-size: 30GB
+          vm-zone-id: ru-central1-a
+          vm-platform-id: standard-v2
+          user-data-path: ./.yc/user-data.yml
+          docker-compose-path: ./.yc/docker-compose.yml

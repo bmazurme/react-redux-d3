@@ -1,0 +1,9 @@
+.error-boundary__message {
+  display: flex;
+  flex-direction: row;
+  margin: 30px 0;
+  padding: 0;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 15.73px;
+}

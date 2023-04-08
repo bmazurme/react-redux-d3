@@ -1,0 +1,65 @@
+.root {
+  /* display: flex;
+  flex-direction: column;
+  box-sizing: content-box;
+  height: 100%;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-style: normal;
+  background: #fafafa;
+
+  --header-background: #fff;
+  --card-background: #fff;
+  --techs-background: #f5f5f5;
+  --promo-tab-background: #e8e8e8;
+  --promo-cover-background: #f5f5f5;
+  --promo-signin-button-bg: #3456f3;
+  --promo-signup-button: #000;
+  --promo-signin-button: #fff;
+  --promo-title: #000;
+  --promo-rogressbar-left-bg: #3456f3;
+  --card-list-background: #f5f5f5; */
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+
+  .root {
+    color: #000;
+    background: #212121;
+  }
+}
+
+@media screen and (max-width: 319px) {
+  .root {
+
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 479px) {
+  .root {
+
+  }
+}
+
+@media screen and (min-width: 480px) and (max-width: 639px) {
+  .root {
+
+  }
+}
+
+@media screen and (min-width: 640px) and (max-width: 839px) {
+  .root {
+
+  }
+}
+
+@media screen and (min-width: 840px) and (max-width: 1100px) {
+  .root {
+
+  }
+}
