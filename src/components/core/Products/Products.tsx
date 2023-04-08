@@ -8,6 +8,7 @@ import {
 } from 'antd';
 import { EditOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import makeDataSelector from '../../../store/makeDataSelector';
+import { store, setProducts } from '../../../store';
 
 import groups from '../../../../mock/groups';
 import clusters from '../../../../mock/clusters';
@@ -17,8 +18,9 @@ import { TypeProduct } from '../../Main/object';
 type FormPayload = {
   name: string;
   description: string;
-  cluster: number;
-  group: number;
+  cluster: string;
+  group: string;
+  id: number;
 };
 
 const inputs = [
@@ -26,62 +28,60 @@ const inputs = [
   { name: 'description', placeholder: 'Description name' },
 ];
 const { confirm } = Modal;
-const showDeleteConfirm = () => {
-  confirm({
-    title: 'Are you sure delete this task?',
-    icon: <ExclamationCircleFilled />,
-    content: 'Some descriptions',
-    okText: 'Yes',
-    okType: 'danger',
-    cancelText: 'No',
-    onOk() {
-      console.log('OK');
-    },
-    onCancel() {
-      console.log('Cancel');
-    },
-  });
-};
-
 const productSelector = makeDataSelector('product');
 
 export default function Products() {
   const errorHandler = useErrorHandler();
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [currentProduct, setCurrentProduct] = useState({
-  //   name: '',
-  //   description: '',
-  //   cluster: 0,
-  //   group: 0,
-  // });
   const closeAddModal = () => setIsModalOpen(false);
   const products = useSelector(productSelector) as unknown as TypeProduct[];
 
-  const { control, handleSubmit, setValue } = useForm<FormPayload>({
+  const showDeleteConfirm = (product: TypeProduct) => {
+    confirm({
+      title: 'Are you sure delete this product?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        console.log(product);
+        const arr = products.filter(({ id }) => id !== product.id);
+        dispatch(setProducts(arr));
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
+  const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: {
       name: '',
       description: '',
-      cluster: 0,
-      group: 0,
+      cluster: '0',
+      group: '0',
+      id: 0,
     },
   });
-  const showModal = (product: any) => {
-    setValue('name', { firstName: 'value' });
-
+  const showModal = (product: TypeProduct) => {
+    reset(product);
     setIsModalOpen(true);
   };
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const {
-        name, description, cluster, group,
-      } = data;
-      console.log(name, description, cluster, group);
+      const arr = products.map((item) => (item.id === data.id ? data : item));
+      dispatch(setProducts(arr));
+      // console.log(name, description, cluster, group);
       setIsModalOpen(false);
     } catch ({ status, data: { reason } }) {
       errorHandler(new Error(`${status}: ${reason}`));
     }
   });
+
+  console.log(products);
 
   return (
     <>
@@ -108,7 +108,7 @@ export default function Products() {
                 size="small"
                 shape="circle"
                 icon={<DeleteOutlined />}
-                onClick={showDeleteConfirm}
+                onClick={() => showDeleteConfirm(product)}
               />
             </Tooltip>
           </List.Item>
@@ -141,9 +141,8 @@ export default function Products() {
               control={control}
               render={({ field }) => (
                 <Select
-                  defaultValue="0"
+                  {...field}
                   style={{ width: '100%', margin: '8px 0' }}
-                  onChange={(e) => field.onChange(e)}
                   options={groups}
                 />
               )}
@@ -153,9 +152,8 @@ export default function Products() {
               control={control}
               render={({ field }) => (
                 <Select
-                  defaultValue="0"
+                  {...field}
                   style={{ width: '100%', margin: '8px 0' }}
-                  onChange={(e) => field.onChange(e)}
                   options={clusters}
                 />
               )}
@@ -178,6 +176,5 @@ export default function Products() {
         </form>
       </Modal>
     </>
-
   );
 }

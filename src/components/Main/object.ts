@@ -2,8 +2,8 @@ export type TypeProduct = {
   id: number;
   name: string;
   description: string;
-  cluster: number;
-  group: number;
+  cluster: string;
+  group: string;
 };
 
 export type TypeGroup = {

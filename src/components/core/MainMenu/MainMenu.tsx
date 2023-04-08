@@ -20,8 +20,8 @@ import { TypeProduct } from '../../Main/object';
 type FormPayload = {
   name: string;
   description: string;
-  cluster: number;
-  group: number;
+  cluster: string;
+  group: string;
 };
 
 const inputs = [
@@ -40,14 +40,12 @@ export default function Container({ heading }: { heading: string | undefined }) 
   const closeAddModal = () => setIsModalOpen(false);
   const dispatch = useDispatch();
   const products = useSelector(productSelector) as unknown as TypeProduct[];
-  // console.log(products);
-
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: {
       name: '',
       description: '',
-      cluster: 0,
-      group: 0,
+      cluster: '0',
+      group: '0',
     },
   });
 
@@ -109,9 +107,8 @@ export default function Container({ heading }: { heading: string | undefined }) 
               control={control}
               render={({ field }) => (
                 <Select
-                  defaultValue="0"
+                  {...field}
                   style={{ width: '100%', margin: '8px 0' }}
-                  onChange={(e) => field.onChange(e)}
                   options={groups}
                 />
               )}
@@ -121,9 +118,8 @@ export default function Container({ heading }: { heading: string | undefined }) 
               control={control}
               render={({ field }) => (
                 <Select
-                  defaultValue="0"
+                  {...field}
                   style={{ width: '100%', margin: '8px 0' }}
-                  onChange={(e) => field.onChange(e)}
                   options={clusters}
                 />
               )}
