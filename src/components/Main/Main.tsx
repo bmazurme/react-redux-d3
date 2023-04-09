@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable react/button-has-type */
-/* eslint-disable max-len */
-import React, { Component } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Card, Modal } from 'antd';
 import {
@@ -11,11 +9,11 @@ import {
 import Tree from 'react-d3-tree';
 import { useCenteredTree, Point } from './helpers';
 import makeDataSelector from '../../store/makeDataSelector';
+import { setProducts } from '../../store';
 
-import { store, setProducts } from '../../store';
-import { TypeProduct } from './object';
-import clustersDict from '../../../mock/clusters';
-import groupsDict from '../../../mock/groups';
+import { TypeProduct, TypeCluster, TypeGroup } from './object';
+
+type UseUserData = [Point, (v: HTMLDivElement | null) => void]
 
 const containerStyles = {
   width: '100%',
@@ -23,18 +21,20 @@ const containerStyles = {
   background: '#eee',
 };
 const { confirm } = Modal;
-
-type UseUserData = [Point, (v: HTMLDivElement | null) => void]
-
 const productSelector = makeDataSelector('product');
+const groupSelector = makeDataSelector('group');
+const clusterSelector = makeDataSelector('cluster');
 
 export default function Main() {
   const dispatch = useDispatch();
   const products = useSelector(productSelector) as unknown as TypeProduct[];
+  const groupsDict = useSelector(groupSelector) as unknown as TypeGroup[];
+  const clustersDict = useSelector(clusterSelector) as unknown as TypeCluster[];
   const clusters = Array.from(new Set(products.map(({ cluster }) => cluster)));
   const groups = Array.from(new Set(products.map(({ group }) => group)));
 
-  const showDeleteConfirm = (product: TypeProduct & { id: number, attributes: Record<string, string | number> }) => {
+  const showDeleteConfirm = (product: TypeProduct
+    & { id: number, attributes: Record<string, string | number> }) => {
     confirm({
       title: 'Are you sure delete this product?',
       icon: <ExclamationCircleFilled />,
@@ -43,7 +43,6 @@ export default function Main() {
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        console.log(product);
         if (product.attributes.type === 'product') {
           const arr = products.filter(({ id }) => id !== product.attributes.id);
           dispatch(setProducts(arr));
@@ -57,24 +56,30 @@ export default function Main() {
 
   const renderForeignObjectNode = ({ nodeDatum, toggleNode, foreignObjectProps }: any) => (
     <g>
-      {/* <circle r={15} onClick={toggleNode} /> */}
       <foreignObject {...foreignObjectProps}>
         <Card
           title={nodeDatum.name}
           bordered={false}
           style={{ width: 250 }}
           actions={[
-            <EditOutlined key="edit" />,
             <>
               {nodeDatum.__rd3t.collapsed
                 ? <EyeInvisibleOutlined onClick={toggleNode} key="invisible" />
                 : <EyeOutlined onClick={toggleNode} key="eye" />}
             </>,
             <Button
-              key="delete"
+              key="edit"
               size="small"
               shape="circle"
               icon={<EditOutlined />}
+              // onClick={() => showDeleteConfirm(nodeDatum)}
+              disabled={nodeDatum.attributes.type === 'group' || nodeDatum.attributes.type === 'cluster'}
+            />,
+            <Button
+              key="delete"
+              size="small"
+              shape="circle"
+              icon={<DeleteOutlined />}
               onClick={() => showDeleteConfirm(nodeDatum)}
               disabled={nodeDatum.attributes.type === 'group' || nodeDatum.attributes.type === 'cluster'}
             />,
@@ -97,25 +102,29 @@ export default function Main() {
       name: clustersDict.find((x) => x.value === item)?.label ?? '',
       attributes: {
         count: Array.from(new Set(products.filter((x) => item === x.cluster))).length ?? 0,
-        groups: Array.from(new Set(products.filter((x) => item === x.cluster).map(({ group }) => group))).length ?? 0,
+        groups: Array.from(new Set(products.filter((x) => item === x.cluster)
+          .map(({ group }) => group))).length ?? 0,
         id: item,
         type: 'cluster',
       },
-      children: Array.from(new Set(products.filter((x) => item === x.cluster).map(({ group }) => group))).map((grp) => ({
+      children: Array.from(new Set(products.filter((x) => item === x.cluster)
+        .map(({ group }) => group))).map((grp) => ({
         name: groupsDict.find((x) => x.value === grp)?.label ?? '',
         attributes: {
-          count: products.filter((x) => item === x.cluster).filter((x) => grp === x.group).length ?? 0,
+          count: products.filter((x) => item === x.cluster)
+            .filter((x) => grp === x.group).length ?? 0,
           groups: '===',
           id: grp,
           type: 'group',
         },
-        children: products.filter((x) => item === x.cluster).filter((x) => grp === x.group).map((prd) => ({
-          name: prd.name,
-          attributes: {
-            id: prd.id,
-            type: 'product',
-          },
-        })),
+        children: products.filter((x) => item === x.cluster)
+          .filter((x) => grp === x.group).map((prd) => ({
+            name: prd.name,
+            attributes: {
+              id: prd.id,
+              type: 'product',
+            },
+          })),
       })),
     })),
   };
@@ -136,11 +145,10 @@ export default function Main() {
         separation={separation}
         translate={translate}
         pathFunc="step"
-        renderCustomNodeElement={(rd3tProps) => renderForeignObjectNode({ ...rd3tProps, foreignObjectProps })}
+        renderCustomNodeElement={(rd3tProps) => renderForeignObjectNode({
+          ...rd3tProps, foreignObjectProps,
+        })}
       />
     </div>
   );
-}
-function useStyles() {
-  throw new Error('Function not implemented.');
 }

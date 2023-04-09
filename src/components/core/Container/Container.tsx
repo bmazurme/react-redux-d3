@@ -1,8 +1,8 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import { Layout, Space } from 'antd';
-import MainMenu from '../MainMenu';
-import Products from '../Products';
+import MainMenu from '../../MainMenu';
+import Products from '../../Products';
 import History from '../History';
 import {
   headerStyle, contentStyle, siderStyle, footerStyle, containerStyle,

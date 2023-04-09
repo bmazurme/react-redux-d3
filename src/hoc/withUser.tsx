@@ -15,7 +15,7 @@ export default function withUser<P extends Record<string, unknown>>(
 ) {
   return function WithUser(pageProps: P & { user?: User }) {
     const handleErrors = useErrorHandler();
-    let userData: User | null = useUser();
+    let userData: User | null = useUser() as User | null;
     const [getUser, {
       isUninitialized,
       isLoading,

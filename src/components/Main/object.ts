@@ -7,13 +7,13 @@ export type TypeProduct = {
 };
 
 export type TypeGroup = {
-  id: number;
-  name: string;
+  value: string;
+  label: string;
 };
 
 export type TypeCluster = {
-  id: number;
-  name: string;
+  value: string;
+  label: string;
 };
 
 export type TypeNode = {

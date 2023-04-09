@@ -8,6 +8,8 @@ import { authApi, usersApi } from './api';
 import userReducer from './slices/userSlice';
 import productReducer from './slices/productSlice';
 import historyReducer from './slices/historySlice';
+import groupReducer from './slices/groupSlice';
+import clusterReducer from './slices/clusterSlice';
 import { isServer } from '../utils';
 
 export * from './api/authApi/endpoints';
@@ -32,6 +34,8 @@ export const store = configureStore({
     user: userReducer,
     product: productReducer,
     history: historyReducer,
+    group: groupReducer,
+    cluster: clusterReducer,
     [authApi.reducerPath]: authApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
   },
@@ -46,11 +50,9 @@ export const store = configureStore({
 });
 
 export const history = createReduxHistory(store);
-
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors
 // see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
 setupListeners(store.dispatch);
-
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}

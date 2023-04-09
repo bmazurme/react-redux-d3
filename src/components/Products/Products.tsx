@@ -1,85 +1,118 @@
-/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useErrorHandler } from 'react-error-boundary';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
-  Button, Col, Row, Modal, Input, Select,
+  List, Typography, Button, Tooltip, Modal, Input, Select, Row,
 } from 'antd';
-import { PlusSquareOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+import makeDataSelector from '../../store/makeDataSelector';
+import { setProducts } from '../../store';
 
-import { store, setProduct } from '../../../store';
-import makeDataSelector from '../../../store/makeDataSelector';
+import groups from '../../../mock/groups';
+import clusters from '../../../mock/clusters';
 
-import groups from '../../../../mock/groups';
-import clusters from '../../../../mock/clusters';
-
-import { TypeProduct } from '../../Main/object';
+import { TypeProduct } from '../Main/object';
 
 type FormPayload = {
   name: string;
   description: string;
   cluster: string;
   group: string;
+  id: number;
 };
 
 const inputs = [
   { name: 'name', placeholder: 'Product name', required: true },
   { name: 'description', placeholder: 'Description name' },
 ];
-
+const { confirm } = Modal;
 const productSelector = makeDataSelector('product');
-const getId = (products: TypeProduct[]) => products.length
-  ?? products.reduce((prev, cur) => (cur.id > prev.id ? cur : prev), { id: -Infinity }).id;
 
-export default function Container({ heading }: { heading: string | undefined }) {
+export default function Products() {
   const errorHandler = useErrorHandler();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const openAddModal = () => setIsModalOpen(true);
-  const closeAddModal = () => setIsModalOpen(false);
   const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeAddModal = () => setIsModalOpen(false);
   const products = useSelector(productSelector) as unknown as TypeProduct[];
+
+  const showDeleteConfirm = (product: TypeProduct) => {
+    confirm({
+      title: 'Are you sure delete this product?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        const arr = products.filter(({ id }) => id !== product.id);
+        dispatch(setProducts(arr));
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: {
       name: '',
       description: '',
       cluster: '0',
       group: '0',
+      id: 0,
     },
   });
+  const showModal = (product: TypeProduct) => {
+    reset(product);
+    setIsModalOpen(true);
+  };
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const {
-        name, description, cluster, group,
-      } = data;
-      dispatch(setProduct({
-        id: getId(products),
-        name,
-        description,
-        cluster,
-        group,
-      }));
-      console.log(name, description, cluster, group);
-      reset();
+      const arr = products.map((item) => (item.id === data.id ? data : item));
+      dispatch(setProducts(arr));
+      // console.log(name, description, cluster, group);
       setIsModalOpen(false);
     } catch ({ status, data: { reason } }) {
       errorHandler(new Error(`${status}: ${reason}`));
     }
   });
 
+  console.log(products);
+
   return (
     <>
-      <Row>
-        <Col span={4}>
-          <Button type="primary" icon={<PlusSquareOutlined />} onClick={openAddModal}>
-            Add Product
-          </Button>
-        </Col>
-        <Col span={4}>{heading}</Col>
-        <Col span={16} />
-      </Row>
+      <List
+        header={<div>Products</div>}
+      // footer={<div>Footer</div>}
+        bordered
+        dataSource={products}
+        renderItem={(product) => (
+          <List.Item>
+            <Typography.Text mark>{product.name}</Typography.Text>
+            <Tooltip title="Edit">
+              <Button
+                type="primary"
+                size="small"
+                shape="circle"
+                icon={<EditOutlined />}
+                onClick={() => showModal(product)}
+              />
+            </Tooltip>
+            <Tooltip title="Delete">
+              <Button
+                type="primary"
+                size="small"
+                shape="circle"
+                icon={<DeleteOutlined />}
+                onClick={() => showDeleteConfirm(product)}
+              />
+            </Tooltip>
+          </List.Item>
+        )}
+      />
       <Modal
         title="Product card"
         open={isModalOpen}
