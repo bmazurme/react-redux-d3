@@ -36,7 +36,6 @@ export default function Products() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const closeAddModal = () => setIsModalOpen(false);
   const products = useSelector(productSelector) as unknown as TypeProduct[];
-
   const showDeleteConfirm = (product: TypeProduct) => {
     confirm({
       title: 'Are you sure delete this product?',
@@ -73,20 +72,17 @@ export default function Products() {
     try {
       const arr = products.map((item) => (item.id === data.id ? data : item));
       dispatch(setProducts(arr));
-      // console.log(name, description, cluster, group);
       setIsModalOpen(false);
     } catch ({ status, data: { reason } }) {
       errorHandler(new Error(`${status}: ${reason}`));
     }
   });
 
-  console.log(products);
-
   return (
     <>
       <List
         header={<div>Products</div>}
-      // footer={<div>Footer</div>}
+        // footer={<div>Footer</div>}
         bordered
         dataSource={products}
         renderItem={(product) => (
