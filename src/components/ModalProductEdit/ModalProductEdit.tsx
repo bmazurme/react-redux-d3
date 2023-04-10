@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useErrorHandler } from 'react-error-boundary';
@@ -9,9 +7,9 @@ import {
 } from 'antd';
 
 import makeDataSelector from '../../store/makeDataSelector';
-import { setProducts } from '../../store';
+import { setProducts, setVersion } from '../../store';
 
-import { TypeProduct, TypeCluster, TypeGroup } from '../Main/object';
+import { TypeProduct, TypeCluster, TypeGroup } from '../object';
 
 type FormPayload = {
   name: string;
@@ -20,6 +18,9 @@ type FormPayload = {
   group: string;
   id: number;
 };
+
+const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 0 8px 8px' };
+const selectStyle = { width: '100%', margin: '8px 0' };
 
 const inputs = [
   { name: 'name', placeholder: 'Product name', required: true },
@@ -51,6 +52,7 @@ export default function Main({ isModalOpen, closeModal, pr }
     try {
       const arr = products.map((item) => (item.id === data.id ? data : item));
       dispatch(setProducts(arr));
+      dispatch(setVersion(arr));
       closeModal();
     } catch ({ status, data: { reason } }) {
       errorHandler(new Error(`${status}: ${reason}`));
@@ -90,7 +92,7 @@ export default function Main({ isModalOpen, closeModal, pr }
             render={({ field }) => (
               <Select
                 {...field}
-                style={{ width: '100%', margin: '8px 0' }}
+                style={selectStyle}
                 options={groupsDict}
               />
             )}
@@ -101,7 +103,7 @@ export default function Main({ isModalOpen, closeModal, pr }
             render={({ field }) => (
               <Select
                 {...field}
-                style={{ width: '100%', margin: '8px 0' }}
+                style={selectStyle}
                 options={clustersDict}
               />
             )}
@@ -110,14 +112,14 @@ export default function Main({ isModalOpen, closeModal, pr }
         <Button
           type="primary"
           onClick={closeModal}
-          style={{ width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' }}
+          style={buttonStyle}
         >
           Cancel
         </Button>
         <Button
           htmlType="submit"
           type="primary"
-          style={{ width: 'calc(50% - 8px)', margin: '8px 0 8px 8px' }}
+          style={buttonStyle}
         >
           Submit
         </Button>

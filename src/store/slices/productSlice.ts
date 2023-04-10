@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import { TypeProduct } from '../../components/Main/object';
+import { TypeProduct } from '../../components/object';
 
 export type ProductState = {
   data: TypeProduct[]

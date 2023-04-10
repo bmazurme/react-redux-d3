@@ -1,12 +1,13 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { useErrorHandler } from 'react-error-boundary';
-import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal, Input } from 'antd';
+
 import { setCluster } from '../../store';
 import makeDataSelector from '../../store/makeDataSelector';
 
-import { TypeGroup } from '../Main/object';
+import { TypeGroup } from '../object';
 
 type FormPayload = {
   value: string;
@@ -14,6 +15,7 @@ type FormPayload = {
 };
 
 const clusterSelector = makeDataSelector('cluster');
+const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
 
 export default function ModalCluster({ isModalClusterOpen, closeAddClusterModal }
   : { isModalClusterOpen: boolean, closeAddClusterModal: () => void }) {
@@ -24,10 +26,8 @@ export default function ModalCluster({ isModalClusterOpen, closeAddClusterModal 
     defaultValues: { value: '', label: '' },
   });
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async ({ label }) => {
     try {
-      const { label } = data;
-
       dispatch(setCluster({ value: clusters.length.toString(), label }));
       reset();
       closeAddClusterModal();
@@ -60,14 +60,14 @@ export default function ModalCluster({ isModalClusterOpen, closeAddClusterModal 
         <Button
           type="primary"
           onClick={closeAddClusterModal}
-          style={{ width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' }}
+          style={buttonStyle}
         >
           Cancel
         </Button>
         <Button
           htmlType="submit"
           type="primary"
-          style={{ width: 'calc(50% - 8px)', margin: '8px 0 8px 8px' }}
+          style={buttonStyle}
         >
           Submit
         </Button>

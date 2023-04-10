@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import { TypeGroup } from '../../components/Main/object';
+import { TypeGroup } from '../../components/object';
 
 export type GroupState = {
   data: TypeGroup[]

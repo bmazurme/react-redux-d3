@@ -6,13 +6,14 @@ import { Button, Modal, Input } from 'antd';
 import { setGroup } from '../../store';
 import makeDataSelector from '../../store/makeDataSelector';
 
-import { TypeGroup } from '../Main/object';
+import { TypeGroup } from '../object';
 
 type FormPayload = {
   value: string;
   label: string;
 };
 
+const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
 const groupSelector = makeDataSelector('group');
 
 export default function ModalGroup({ isModalGroupOpen, closeAddGroupModal }
@@ -24,10 +25,8 @@ export default function ModalGroup({ isModalGroupOpen, closeAddGroupModal }
     defaultValues: { value: '', label: '' },
   });
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async ({ label }) => {
     try {
-      const { label } = data;
-
       dispatch(setGroup({ value: groups.length.toString(), label }));
       reset();
       closeAddGroupModal();
@@ -60,14 +59,14 @@ export default function ModalGroup({ isModalGroupOpen, closeAddGroupModal }
         <Button
           type="primary"
           onClick={closeAddGroupModal}
-          style={{ width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' }}
+          style={buttonStyle}
         >
           Cancel
         </Button>
         <Button
           htmlType="submit"
           type="primary"
-          style={{ width: 'calc(50% - 8px)', margin: '8px 0 8px 8px' }}
+          style={buttonStyle}
         >
           Submit
         </Button>

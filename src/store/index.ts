@@ -7,7 +7,7 @@ import { createBrowserHistory, createMemoryHistory } from 'history';
 import { authApi, usersApi } from './api';
 import userReducer from './slices/userSlice';
 import productReducer from './slices/productSlice';
-import historyReducer from './slices/historySlice';
+import versionReducer from './slices/versionSlice';
 import groupReducer from './slices/groupSlice';
 import clusterReducer from './slices/clusterSlice';
 import { isServer } from '../utils';
@@ -33,7 +33,7 @@ export const store = configureStore({
     // Add the generated reducer as a specific top-level slice
     user: userReducer,
     product: productReducer,
-    history: historyReducer,
+    version: versionReducer,
     group: groupReducer,
     cluster: clusterReducer,
     [authApi.reducerPath]: authApi.reducer,

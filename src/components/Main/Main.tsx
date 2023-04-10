@@ -6,23 +6,20 @@ import { Button, Card, Modal } from 'antd';
 import {
   EditOutlined, DeleteOutlined, EyeOutlined, EyeInvisibleOutlined, ExclamationCircleFilled,
 } from '@ant-design/icons';
+
 import Tree from 'react-d3-tree';
 
 import ModalProductEdit from '../ModalProductEdit';
 import { useCenteredTree, Point } from './helpers';
 import makeDataSelector from '../../store/makeDataSelector';
-import { setProducts } from '../../store';
-
-import { TypeProduct, TypeCluster, TypeGroup } from './object';
+import { setProducts, setVersion } from '../../store';
+import { TypeProduct, TypeCluster, TypeGroup } from '../object';
 
 type UseUserData = [Point, (v: HTMLDivElement | null) => void];
 
-const containerStyles = {
-  width: '100%',
-  height: '100%',
-  background: '#eee',
-};
+const containerStyles = { width: '100%', height: '100%', background: '#eee' };
 const { confirm } = Modal;
+
 const productSelector = makeDataSelector('product');
 const groupSelector = makeDataSelector('group');
 const clusterSelector = makeDataSelector('cluster');
@@ -55,6 +52,7 @@ export default function Main() {
         if (product.attributes.type === 'product') {
           const arr = products.filter(({ id }) => id !== product.attributes.id);
           dispatch(setProducts(arr));
+          dispatch(setVersion(arr));
         }
       },
       onCancel() {
@@ -100,6 +98,9 @@ export default function Main() {
       })),
     })),
   };
+
+  console.log(tree);
+
   const [translate, containerRef] = useCenteredTree() as unknown as UseUserData;
   const nodeSize = { x: 250, y: 250 };
   const separation = { siblings: 2, nonSiblings: 3 };
@@ -162,7 +163,11 @@ export default function Main() {
           })}
         />
       </div>
-      <ModalProductEdit isModalOpen={isModalOpen} closeModal={closeModal} pr={pr} />
+      <ModalProductEdit
+        isModalOpen={isModalOpen}
+        closeModal={closeModal}
+        pr={pr}
+      />
     </>
   );
 }

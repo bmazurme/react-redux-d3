@@ -8,12 +8,9 @@ import {
 } from 'antd';
 
 import makeDataSelector from '../../store/makeDataSelector';
-import { setProduct } from '../../store';
+import { setProduct, setVersion } from '../../store';
 
-import groups from '../../../mock/groups';
-import clusters from '../../../mock/clusters';
-
-import { TypeProduct } from '../Main/object';
+import { TypeCluster, TypeGroup, TypeProduct } from '../object';
 
 type FormPayload = {
   name: string;
@@ -28,7 +25,13 @@ const inputs = [
   { name: 'description', placeholder: 'Description name' },
 ];
 
+const selectStyle = { width: '100%', margin: '8px 0' };
+const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
+
 const productSelector = makeDataSelector('product');
+const groupsSelector = makeDataSelector('group');
+const clustersSelector = makeDataSelector('cluster');
+
 const getId = (products: TypeProduct[]) => products.length
   ?? products.reduce((prev, cur) => (cur.id > prev.id ? cur : prev), { id: -Infinity }).id;
 
@@ -37,6 +40,8 @@ export default function ModalProducts({ isModalOpen, closeAddModal }
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
   const products = useSelector(productSelector) as unknown as TypeProduct[];
+  const groups = useSelector(groupsSelector) as unknown as TypeGroup[];
+  const clusters = useSelector(clustersSelector) as unknown as TypeCluster[];
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: {
       name: '',
@@ -50,6 +55,7 @@ export default function ModalProducts({ isModalOpen, closeAddModal }
   const onSubmit = handleSubmit(async (data) => {
     try {
       dispatch(setProduct({ ...data, id: getId(products) }));
+      dispatch(setVersion([...products, { ...data, id: getId(products) }]));
       reset();
       closeAddModal();
     } catch ({ status, data: { reason } }) {
@@ -86,7 +92,7 @@ export default function ModalProducts({ isModalOpen, closeAddModal }
             render={({ field }) => (
               <Select
                 {...field}
-                style={{ width: '100%', margin: '8px 0' }}
+                style={selectStyle}
                 options={groups}
               />
             )}
@@ -97,7 +103,7 @@ export default function ModalProducts({ isModalOpen, closeAddModal }
             render={({ field }) => (
               <Select
                 {...field}
-                style={{ width: '100%', margin: '8px 0' }}
+                style={selectStyle}
                 options={clusters}
               />
             )}
@@ -106,14 +112,14 @@ export default function ModalProducts({ isModalOpen, closeAddModal }
         <Button
           type="primary"
           onClick={closeAddModal}
-          style={{ width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' }}
+          style={buttonStyle}
         >
           Cancel
         </Button>
         <Button
           htmlType="submit"
           type="primary"
-          style={{ width: 'calc(50% - 8px)', margin: '8px 0 8px 8px' }}
+          style={buttonStyle}
         >
           Submit
         </Button>
