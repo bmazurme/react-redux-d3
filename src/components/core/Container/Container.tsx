@@ -2,7 +2,7 @@ import React from 'react';
 import type { PropsWithChildren } from 'react';
 import { Layout, Space } from 'antd';
 import MainMenu from '../../MainMenu';
-import Products from '../../Products';
+import Sidebar from '../../Sidebar';
 import History from '../../Versions';
 import {
   headerStyle, contentStyle, siderStyle, footerStyle, containerStyle,
@@ -23,7 +23,7 @@ export default function Container({ children, heading }: Props) {
         </Header>
         <Layout>
           <Sider style={siderStyle}>
-            <Products />
+            <Sidebar />
           </Sider>
           <Content style={contentStyle}>{children}</Content>
         </Layout>

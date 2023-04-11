@@ -26,10 +26,14 @@ const slice = createSlice({
       state,
       { payload: data }: PayloadAction<TypeCluster>,
     ) => ({ ...state, data: [...state.data, data] }),
+    setClusters: (
+      state,
+      { payload: data }: PayloadAction<TypeCluster[]>,
+    ) => ({ ...state, data }),
   },
 });
 
-export const { setCluster } = slice.actions;
+export const { setCluster, setClusters } = slice.actions;
 
 export default slice.reducer;
 

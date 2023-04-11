@@ -31,7 +31,7 @@ const groupSelector = makeDataSelector('group');
 const clusterSelector = makeDataSelector('cluster');
 
 export default function Main({ isModalOpen, closeModal, pr }
-  : { isModalOpen: boolean, closeModal: () => void, pr: any }) {
+  : { isModalOpen: boolean, closeModal: () => void, pr: TypeProduct }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
   const products = useSelector(productSelector) as unknown as TypeProduct[];
@@ -52,7 +52,11 @@ export default function Main({ isModalOpen, closeModal, pr }
     try {
       const arr = products.map((item) => (item.id === data.id ? data : item));
       dispatch(setProducts(arr));
-      dispatch(setVersion(arr));
+      dispatch(setVersion({
+        products: arr,
+        groups: groupsDict,
+        clusters: groupsDict,
+      }));
       closeModal();
     } catch ({ status, data: { reason } }) {
       errorHandler(new Error(`${status}: ${reason}`));
@@ -109,18 +113,10 @@ export default function Main({ isModalOpen, closeModal, pr }
             )}
           />
         </Row>
-        <Button
-          type="primary"
-          onClick={closeModal}
-          style={buttonStyle}
-        >
+        <Button type="primary" onClick={closeModal} style={buttonStyle}>
           Cancel
         </Button>
-        <Button
-          htmlType="submit"
-          type="primary"
-          style={buttonStyle}
-        >
+        <Button htmlType="submit" type="primary" style={buttonStyle}>
           Submit
         </Button>
       </form>

@@ -55,7 +55,11 @@ export default function ModalProducts({ isModalOpen, closeAddModal }
   const onSubmit = handleSubmit(async (data) => {
     try {
       dispatch(setProduct({ ...data, id: getId(products) }));
-      dispatch(setVersion([...products, { ...data, id: getId(products) }]));
+      dispatch(setVersion({
+        products: [...products, { ...data, id: getId(products) }],
+        groups,
+        clusters,
+      }));
       reset();
       closeAddModal();
     } catch ({ status, data: { reason } }) {
@@ -109,18 +113,10 @@ export default function ModalProducts({ isModalOpen, closeAddModal }
             )}
           />
         </Row>
-        <Button
-          type="primary"
-          onClick={closeAddModal}
-          style={buttonStyle}
-        >
+        <Button type="primary" onClick={closeAddModal} style={buttonStyle}>
           Cancel
         </Button>
-        <Button
-          htmlType="submit"
-          type="primary"
-          style={buttonStyle}
-        >
+        <Button htmlType="submit" type="primary" style={buttonStyle}>
           Submit
         </Button>
       </form>

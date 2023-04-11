@@ -10,6 +10,7 @@ import {
 import Tree from 'react-d3-tree';
 
 import ModalProductEdit from '../ModalProductEdit';
+import ModalGroup from '../ModalGroup';
 import { useCenteredTree, Point } from './helpers';
 import makeDataSelector from '../../store/makeDataSelector';
 import { setProducts, setVersion } from '../../store';
@@ -27,6 +28,7 @@ const clusterSelector = makeDataSelector('cluster');
 export default function Main() {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalGroupOpen, setIsModalGroupOpen] = useState(false);
   const [pr, setPr] = useState({
     name: '',
     description: '',
@@ -34,6 +36,7 @@ export default function Main() {
     group: '0',
     id: 0,
   });
+  const [grp, setGrp] = useState({ value: '', label: '' });
   const products = useSelector(productSelector) as unknown as TypeProduct[];
   const groupsDict = useSelector(groupSelector) as unknown as TypeGroup[];
   const clustersDict = useSelector(clusterSelector) as unknown as TypeCluster[];
@@ -52,7 +55,11 @@ export default function Main() {
         if (product.attributes.type === 'product') {
           const arr = products.filter(({ id }) => id !== product.attributes.id);
           dispatch(setProducts(arr));
-          dispatch(setVersion(arr));
+          dispatch(setVersion({
+            products: arr,
+            groups: groupsDict,
+            clusters: clustersDict,
+          }));
         }
       },
       onCancel() {
@@ -98,8 +105,7 @@ export default function Main() {
       })),
     })),
   };
-
-  console.log(tree);
+  // console.log(tree);
 
   const [translate, containerRef] = useCenteredTree() as unknown as UseUserData;
   const nodeSize = { x: 250, y: 250 };
@@ -112,7 +118,18 @@ export default function Main() {
     setPr(products.find((x) => x.id === product.attributes.id)!);
     setIsModalOpen(true);
   };
+
+  const showModalGroup = (g: TypeGroup & { attributes: Record<string, string> }) => {
+    setGrp(groupsDict.find((x) => x.value === g.attributes.id)!);
+    setIsModalGroupOpen(true);
+  };
+
+  const showModalCluster = (c: TypeGroup & { attributes: Record<string, string> }) => {
+    console.log(c);
+  };
+
   const closeModal = () => setIsModalOpen(false);
+  const closeModalGroup = () => setIsModalGroupOpen(false);
   const renderForeignObjectNode = ({ nodeDatum, toggleNode, foreignObjectProps: obj }: any) => (
     <g>
       <foreignObject {...obj}>
@@ -131,8 +148,13 @@ export default function Main() {
               size="small"
               shape="circle"
               icon={<EditOutlined />}
-              onClick={() => showModal(nodeDatum)}
-              disabled={nodeDatum.attributes.type === 'group' || nodeDatum.attributes.type === 'cluster' || nodeDatum.attributes.type === 'clusters'}
+              onClick={() => (nodeDatum.attributes.type === 'group'
+                ? showModalGroup(nodeDatum)
+                : nodeDatum.attributes.type === 'cluster'
+                  ? showModalCluster(nodeDatum)
+                  : showModal(nodeDatum)
+              )}
+              disabled={nodeDatum.attributes.type === 'clusters'}
             />,
             <Button
               key="delete"
@@ -167,6 +189,11 @@ export default function Main() {
         isModalOpen={isModalOpen}
         closeModal={closeModal}
         pr={pr}
+      />
+      <ModalGroup
+        isOpen={isModalGroupOpen}
+        closeModal={closeModalGroup}
+        currentGroup={grp}
       />
     </>
   );

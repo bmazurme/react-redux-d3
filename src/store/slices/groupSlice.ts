@@ -27,10 +27,14 @@ const slice = createSlice({
       state,
       { payload: data }: PayloadAction<TypeGroup>,
     ) => ({ ...state, data: [...state.data, data] }),
+    setGroups: (
+      state,
+      { payload: data }: PayloadAction<TypeGroup[]>,
+    ) => ({ ...state, data }),
   },
 });
 
-export const { setGroup } = slice.actions;
+export const { setGroup, setGroups } = slice.actions;
 
 export default slice.reducer;
 

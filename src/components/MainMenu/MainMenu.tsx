@@ -57,12 +57,12 @@ export default function Container({ heading }: { heading: string | undefined }) 
         closeAddModal={closeAddModal}
       />
       <ModalGroup
-        isModalGroupOpen={isModalGroupOpen}
-        closeAddGroupModal={closeAddGroupModal}
+        isOpen={isModalGroupOpen}
+        closeModal={closeAddGroupModal}
       />
       <ModalCluster
-        isModalClusterOpen={isModalClusterOpen}
-        closeAddClusterModal={closeAddClusterModal}
+        isOpen={isModalClusterOpen}
+        closeModal={closeAddClusterModal}
       />
     </>
   );

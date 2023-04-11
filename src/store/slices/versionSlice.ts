@@ -3,10 +3,16 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import { TypeProduct } from '../../components/object';
+import { TypeCluster, TypeGroup, TypeProduct } from '../../components/object';
+
+export type TypeVersion = {
+  products: TypeProduct[];
+  groups: TypeGroup[];
+  clusters: TypeCluster[];
+};
 
 export type VersionState = {
-  data: TypeProduct[][]
+  data: TypeVersion[]
 };
 
 export const initialVersionState: VersionState = {
@@ -19,12 +25,17 @@ const slice = createSlice({
   reducers: {
     setVersion: (
       state,
-      { payload: data }: PayloadAction<TypeProduct[]>,
-    ) => ({ ...state, data: [...state.data, data] }),
-    // setProducts: (
-    //   state,
-    //   { payload: data }: PayloadAction<TypeProduct[]>,
-    // ) => ({ ...state, data }),
+      { payload: data }: PayloadAction<TypeVersion>,
+    ) => ({
+      ...state,
+      data: [
+        ...state.data, {
+          products: data.products,
+          groups: data.groups,
+          clusters: data.clusters,
+        },
+      ],
+    }),
   },
 });
 
