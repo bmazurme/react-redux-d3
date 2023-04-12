@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useErrorHandler } from 'react-error-boundary';
 import { useForm, Controller } from 'react-hook-form';
 import { Button, Modal, Input } from 'antd';
 
-import { setCluster, setVersion } from '../../store';
+import { setCluster, setVersion, setClusters } from '../../store';
 import makeDataSelector from '../../store/makeDataSelector';
 
 import { TypeCluster, TypeGroup, TypeProduct } from '../object';
@@ -19,8 +19,8 @@ const groupSelector = makeDataSelector('group');
 const productSelector = makeDataSelector('product');
 const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
 
-export default function ModalCluster({ isOpen, closeModal }
-  : { isOpen: boolean, closeModal: () => void }) {
+export default function ModalCluster({ isOpen, closeModal, currentCluster }
+  : { isOpen: boolean, closeModal: () => void, currentCluster?: TypeCluster }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
   const clusters = useSelector(clusterSelector) as unknown as TypeCluster[];
@@ -32,18 +32,34 @@ export default function ModalCluster({ isOpen, closeModal }
 
   const onSubmit = handleSubmit(async ({ label }) => {
     try {
-      dispatch(setCluster({ value: clusters.length.toString(), label }));
-      dispatch(setVersion({
-        products,
-        groups,
-        clusters: [...clusters, { value: clusters.length.toString(), label }],
-      }));
+      if (currentCluster) {
+        const arr = clusters.map((item) => (item.value === currentCluster.value
+          ? { ...item, label }
+          : item));
+        dispatch(setClusters(arr));
+        dispatch(setVersion({ products, groups, clusters: arr }));
+      } else {
+        dispatch(setCluster({ value: clusters.length.toString(), label }));
+        dispatch(setVersion({
+          products,
+          groups,
+          clusters: [...clusters, { value: clusters.length.toString(), label }],
+        }));
+      }
+
       reset();
       closeModal();
     } catch ({ status, data: { reason } }) {
       errorHandler(new Error(`${status}: ${reason}`));
     }
   });
+
+  useEffect(() => {
+    if (currentCluster) {
+      console.log(currentCluster);
+      reset(currentCluster);
+    }
+  }, [currentCluster]);
 
   return (
     <Modal

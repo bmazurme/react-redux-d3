@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-underscore-dangle */
 import React, { useState } from 'react';
@@ -10,9 +11,10 @@ import {
 import Tree from 'react-d3-tree';
 
 import ModalProductEdit from '../ModalProductEdit';
-import ModalGroup from '../ModalGroup';
-import { useCenteredTree, Point } from './helpers';
+import ModalEditGroup from '../ModalEditGroup';
+import ModalCluster from '../ModalCluster';
 import makeDataSelector from '../../store/makeDataSelector';
+import { useCenteredTree, Point } from './helpers';
 import { setProducts, setVersion } from '../../store';
 import { TypeProduct, TypeCluster, TypeGroup } from '../object';
 
@@ -29,6 +31,7 @@ export default function Main() {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalGroupOpen, setIsModalGroupOpen] = useState(false);
+  const [isModalClusterOpen, setIsModalClusterOpen] = useState(false);
   const [pr, setPr] = useState({
     name: '',
     description: '',
@@ -36,7 +39,8 @@ export default function Main() {
     group: '0',
     id: 0,
   });
-  const [grp, setGrp] = useState({ value: '', label: '' });
+  const [grp, setGrp] = useState({ value: '', label: '', children: [] });
+  const [cltr, setCltr] = useState({ value: '', label: '' });
   const products = useSelector(productSelector) as unknown as TypeProduct[];
   const groupsDict = useSelector(groupSelector) as unknown as TypeGroup[];
   const clustersDict = useSelector(clusterSelector) as unknown as TypeCluster[];
@@ -85,17 +89,17 @@ export default function Main() {
         type: 'cluster',
       },
       children: Array.from(new Set(products.filter((x) => item === x.cluster)
-        .map(({ group }) => group))).map((grp) => ({
-        name: groupsDict.find((x) => x.value === grp)?.label ?? '',
+        .map(({ group }) => group))).map((g) => ({
+        name: groupsDict.find((x) => x.value === g)?.label ?? '',
         attributes: {
           count: products.filter((x) => item === x.cluster)
-            .filter((x) => grp === x.group).length ?? 0,
+            .filter((x) => g === x.group).length ?? 0,
           groups: '===',
-          id: grp,
+          id: g,
           type: 'group',
         },
         children: products.filter((x) => item === x.cluster)
-          .filter((x) => grp === x.group).map((prd) => ({
+          .filter((x) => g === x.group).map((prd) => ({
             name: prd.name,
             attributes: {
               id: prd.id,
@@ -119,17 +123,20 @@ export default function Main() {
     setIsModalOpen(true);
   };
 
-  const showModalGroup = (g: TypeGroup & { attributes: Record<string, string> }) => {
-    setGrp(groupsDict.find((x) => x.value === g.attributes.id)!);
+  const showModalGroup = (g: TypeGroup & { attributes: Record<string, string>,
+    children: any }) => {
+    setGrp({ ...groupsDict.find((x) => x.value === g.attributes.id)!, children: g.children });
     setIsModalGroupOpen(true);
   };
 
   const showModalCluster = (c: TypeGroup & { attributes: Record<string, string> }) => {
-    console.log(c);
+    setCltr(clustersDict.find((x) => x.value === c.attributes.id)!);
+    setIsModalClusterOpen(true);
   };
 
   const closeModal = () => setIsModalOpen(false);
   const closeModalGroup = () => setIsModalGroupOpen(false);
+  const closeModalCluster = () => setIsModalClusterOpen(false);
   const renderForeignObjectNode = ({ nodeDatum, toggleNode, foreignObjectProps: obj }: any) => (
     <g>
       <foreignObject {...obj}>
@@ -190,10 +197,15 @@ export default function Main() {
         closeModal={closeModal}
         pr={pr}
       />
-      <ModalGroup
+      <ModalEditGroup
         isOpen={isModalGroupOpen}
         closeModal={closeModalGroup}
         currentGroup={grp}
+      />
+      <ModalCluster
+        isOpen={isModalClusterOpen}
+        closeModal={closeModalCluster}
+        currentCluster={cltr}
       />
     </>
   );

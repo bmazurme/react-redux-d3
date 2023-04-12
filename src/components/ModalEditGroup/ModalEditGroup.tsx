@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useErrorHandler } from 'react-error-boundary';
@@ -6,7 +7,7 @@ import {
   Button, Modal, Input, Select,
 } from 'antd';
 
-import { setGroup, setGroups, setVersion } from '../../store';
+import { setGroups, setProducts, setVersion } from '../../store';
 import makeDataSelector from '../../store/makeDataSelector';
 
 import { TypeCluster, TypeGroup, TypeProduct } from '../object';
@@ -22,8 +23,8 @@ const groupSelector = makeDataSelector('group');
 const clusterSelector = makeDataSelector('cluster');
 const productSelector = makeDataSelector('product');
 
-export default function ModalGroup({ isOpen, closeModal, currentGroup }
-  : { isOpen: boolean, closeModal: () => void, currentGroup?: TypeGroup }) {
+export default function ModalEditGroup({ isOpen, closeModal, currentGroup }
+  : { isOpen: boolean, closeModal: () => void, currentGroup?: any }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
   const groups = useSelector(groupSelector) as unknown as TypeGroup[];
@@ -33,22 +34,16 @@ export default function ModalGroup({ isOpen, closeModal, currentGroup }
     defaultValues: { label: '', cluster: '' },
   });
 
-  const onSubmit = handleSubmit(async ({ label }) => {
+  const onSubmit = handleSubmit(async ({ label, cluster }) => {
     try {
-      // if (currentGroup) {
-      //   const arr = groups.map((item) => (item.value === currentGroup.value
-      //     ? { ...item, label }
-      //     : item));
-      //   dispatch(setGroups(arr));
-      //   dispatch(setVersion({ products, groups: arr, clusters }));
-      // } else {
-      dispatch(setGroup({ value: groups.length.toString(), label }));
-      dispatch(setVersion({
-        products,
-        clusters,
-        groups: [...groups, { value: groups.length.toString(), label }],
-      }));
-      // }
+      const arr = groups.map((item) => (item.value === currentGroup.value
+        ? { ...item, label }
+        : item));
+      dispatch(setGroups(arr));
+      const ids = currentGroup.children.map((x: any) => x.attributes.id);
+      const modProducts = products.map((x) => (ids.some((id: any) => id === x.id) ? { ...x, cluster } : x));
+      dispatch(setProducts(modProducts));
+      dispatch(setVersion({ products: modProducts, groups: arr, clusters }));
 
       reset();
       closeModal();
@@ -59,9 +54,9 @@ export default function ModalGroup({ isOpen, closeModal, currentGroup }
 
   useEffect(() => {
     if (currentGroup) {
-      const val = products.find((x) => x.group === currentGroup.value);
-      console.log(val);
-      reset(currentGroup);
+      const attributes = currentGroup.children[0]?.attributes;
+      const val = products.find((x) => x.id === attributes?.id);
+      reset({ label: currentGroup.label, cluster: val?.cluster });
     }
   }, [currentGroup]);
 
@@ -73,7 +68,7 @@ export default function ModalGroup({ isOpen, closeModal, currentGroup }
       footer={[]}
     >
       <form onSubmit={onSubmit} key="form">
-        {/* <Controller
+        <Controller
           name={'cluster' as keyof FormPayload}
           control={control}
           render={({ field }) => (
@@ -83,7 +78,7 @@ export default function ModalGroup({ isOpen, closeModal, currentGroup }
               options={clusters}
             />
           )}
-        /> */}
+        />
         <Controller
           name={'label' as keyof FormPayload}
           control={control}
