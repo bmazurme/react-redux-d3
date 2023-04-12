@@ -8,7 +8,7 @@ import { setProducts, setVersion } from '../../store';
 import makeDataSelector from '../../store/makeDataSelector';
 
 type FormPayload = {
-  group: string;
+  cluster: string;
 };
 
 const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
@@ -17,23 +17,23 @@ const groupSelector = makeDataSelector('group');
 const clusterSelector = makeDataSelector('cluster');
 const productSelector = makeDataSelector('product');
 
-export default function ModalEditGroup({ isOpen, closeModal, currentGroup }
-  : { isOpen: boolean, closeModal: () => void, currentGroup?: any }) {
+export default function ModalEditCluster({ isOpen, closeModal, currentCluster }
+  : { isOpen: boolean, closeModal: () => void, currentCluster?: any }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
   const groups = useSelector(groupSelector) as TypeGroup[];
   const clusters = useSelector(clusterSelector) as TypeCluster[];
   const products = useSelector(productSelector) as TypeProduct[];
   const { control, handleSubmit, reset } = useForm<FormPayload>({
-    defaultValues: { group: '' },
+    defaultValues: { cluster: '' },
   });
 
-  const onSubmit = handleSubmit(async ({ group }) => {
+  const onSubmit = handleSubmit(async ({ cluster }) => {
     try {
-      const ids = currentGroup.children
-        .map((x: TypeNode) => x.attributes.id);
+      const ids = currentCluster.children
+        .map((x: TypeNode) => (x.children!.map((c: TypeNode) => c.attributes.id))).flat();
       const modProducts = products
-        .map((x) => (ids.some((id: number) => id === x.id) ? { ...x, group } : x));
+        .map((x) => (ids.some((id: number) => id === x.id) ? { ...x, cluster } : x));
       dispatch(setProducts(modProducts));
       dispatch(setVersion({ products: modProducts, groups, clusters }));
       reset();
@@ -44,24 +44,29 @@ export default function ModalEditGroup({ isOpen, closeModal, currentGroup }
   });
 
   useEffect(() => {
-    if (currentGroup) {
-      const attributes = currentGroup.children[0]?.attributes;
+    if (currentCluster) {
+      const attributes = currentCluster.children[0]?.children[0]?.attributes;
       const val = products.find((x) => x.id === attributes?.id);
-      reset({ group: val?.group });
+      reset({ cluster: val?.cluster });
     }
-  }, [currentGroup]);
+  }, [currentCluster]);
 
   return (
-    <Modal title="Group card" open={isOpen} onCancel={closeModal} footer={[]}>
+    <Modal
+      title="Cluster card"
+      open={isOpen}
+      onCancel={closeModal}
+      footer={[]}
+    >
       <form onSubmit={onSubmit} key="form">
         <Controller
-          name={'group' as keyof FormPayload}
+          name={'cluster' as keyof FormPayload}
           control={control}
           render={({ field }) => (
             <Select
               {...field}
               style={selectStyle}
-              options={groups}
+              options={clusters}
             />
           )}
         />

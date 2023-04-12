@@ -3,19 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import { TypeCluster } from '../../components/object';
+import initClusters from '../../mock/initClusters';
 
 export type ClusterState = {
   data: TypeCluster[]
 };
 
 export const initialClusterState: ClusterState = {
-  data: [
-    { value: '0', label: 'Cluster 1' },
-    { value: '1', label: 'Cluster 2' },
-    { value: '2', label: 'Cluster 3' },
-    { value: '3', label: 'Cluster 4' },
-  ],
+  data: initClusters,
 };
 
 const slice = createSlice({

@@ -1,9 +1,11 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import { Layout, Space } from 'antd';
+
 import MainMenu from '../../MainMenu';
 import Sidebar from '../../Sidebar';
 import History from '../../Versions';
+
 import {
   headerStyle, contentStyle, siderStyle, footerStyle, containerStyle,
 } from './style';

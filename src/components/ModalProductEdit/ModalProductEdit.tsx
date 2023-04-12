@@ -9,8 +9,6 @@ import {
 import makeDataSelector from '../../store/makeDataSelector';
 import { setProducts, setVersion } from '../../store';
 
-import { TypeProduct, TypeCluster, TypeGroup } from '../object';
-
 type FormPayload = {
   name: string;
   description: string;
@@ -34,9 +32,9 @@ export default function Main({ isModalOpen, closeModal, pr }
   : { isModalOpen: boolean, closeModal: () => void, pr: TypeProduct }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
-  const products = useSelector(productSelector) as unknown as TypeProduct[];
-  const groupsDict = useSelector(groupSelector) as unknown as TypeGroup[];
-  const clustersDict = useSelector(clusterSelector) as unknown as TypeCluster[];
+  const products = useSelector(productSelector) as TypeProduct[];
+  const groupsDict = useSelector(groupSelector) as TypeGroup[];
+  const clustersDict = useSelector(clusterSelector) as TypeCluster[];
 
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: {
@@ -81,7 +79,7 @@ export default function Main({ isModalOpen, closeModal, pr }
               key={input.name}
               name={input.name as keyof FormPayload}
               control={control}
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <Input
                   {...field}
                   {...input}

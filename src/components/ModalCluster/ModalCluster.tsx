@@ -7,8 +7,6 @@ import { Button, Modal, Input } from 'antd';
 import { setCluster, setVersion, setClusters } from '../../store';
 import makeDataSelector from '../../store/makeDataSelector';
 
-import { TypeCluster, TypeGroup, TypeProduct } from '../object';
-
 type FormPayload = {
   value: string;
   label: string;
@@ -23,9 +21,9 @@ export default function ModalCluster({ isOpen, closeModal, currentCluster }
   : { isOpen: boolean, closeModal: () => void, currentCluster?: TypeCluster }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
-  const clusters = useSelector(clusterSelector) as unknown as TypeCluster[];
-  const groups = useSelector(groupSelector) as unknown as TypeGroup[];
-  const products = useSelector(productSelector) as unknown as TypeProduct[];
+  const clusters = useSelector(clusterSelector) as TypeCluster[];
+  const groups = useSelector(groupSelector) as TypeGroup[];
+  const products = useSelector(productSelector) as TypeProduct[];
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: { value: '', label: '' },
   });
@@ -56,7 +54,6 @@ export default function ModalCluster({ isOpen, closeModal, currentCluster }
 
   useEffect(() => {
     if (currentCluster) {
-      console.log(currentCluster);
       reset(currentCluster);
     }
   }, [currentCluster]);
@@ -72,7 +69,7 @@ export default function ModalCluster({ isOpen, closeModal, currentCluster }
         <Controller
           name={'label' as keyof FormPayload}
           control={control}
-          render={({ field, fieldState }) => (
+          render={({ field }) => (
             <Input
               {...field}
               name="label"

@@ -57,7 +57,13 @@
               "ts": "never"
             }
           ]
+    },
+    "globals": {
+        "TypeProject": "readonly",
+        "TypeGroup":  "readonly",
+        "TypeCluster":  "readonly",
+        "TypeVersion":  "readonly"
     }
-    
+        
     // "import/extensions": ["never"]
 }

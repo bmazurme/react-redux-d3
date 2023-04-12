@@ -3,20 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import { TypeGroup } from '../../components/object';
+import initGroups from '../../mock/initGroups';
 
 export type GroupState = {
   data: TypeGroup[]
 };
 
 export const initialGroupState: GroupState = {
-  data: [
-    { value: '0', label: 'Group 1' },
-    { value: '1', label: 'Group 2' },
-    { value: '2', label: 'Group 3' },
-    { value: '3', label: 'Group 4' },
-    { value: '4', label: 'Group 5' },
-  ],
+  data: initGroups,
 };
 
 const slice = createSlice({

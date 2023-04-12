@@ -13,12 +13,12 @@ type Environment = 'development' | 'production' | 'none' | undefined;
 
 const common = {
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
     modules: ['node_modules'],
   },
   plugins: [
     new ESLintPlugin({
-      extensions: ['js', 'jsx', 'ts', 'tsx'],
+      extensions: ['.tsx', '.ts', '.jsx', '.js'],
     }),
     new MiniCssExtractPlugin(),
   ],
@@ -64,7 +64,7 @@ const client = merge<Configuration>(common, {
     minimizer: [new TerserPlugin()],
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.svg'],
   },
   plugins: [
     new MiniCssExtractPlugin(),

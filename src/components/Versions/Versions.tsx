@@ -20,11 +20,15 @@ export default function Versions() {
   const dispatch = useDispatch();
   const onChange = (value: number) => {
     setCurrent(value);
+
     dispatch(setProducts(versions[value].products));
     dispatch(setGroups(versions[value].groups));
     dispatch(setClusters(versions[value].clusters));
   };
-  useEffect(() => setCurrent(versions.length), [versions.length]);
+
+  useEffect(() => {
+    setCurrent(versions.length);
+  }, [versions.length]);
 
   return (
     <Steps

@@ -36,9 +36,6 @@ const authApiEndpoints = authApi
         query: (token: string) => ({
           url: `/confirm/${token}`,
           method: 'GET',
-          // async onSuccess(dispatch, data) {
-          //   dispatch(setCredentials(data as User));
-          // },
         }),
         invalidatesTags: ['User'],
       }),

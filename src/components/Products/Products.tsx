@@ -10,8 +10,6 @@ import { EditOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-desi
 import makeDataSelector from '../../store/makeDataSelector';
 import { setProducts, setVersion } from '../../store';
 
-import { TypeGroup, TypeProduct, TypeCluster } from '../object';
-
 type FormPayload = {
   name: string;
   description: string;
@@ -37,9 +35,9 @@ export default function Products() {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const closeAddModal = () => setIsModalOpen(false);
-  const products = useSelector(productSelector) as unknown as TypeProduct[];
-  const groups = useSelector(groupSelector) as unknown as TypeGroup[];
-  const clusters = useSelector(clusterSelector) as unknown as TypeCluster[];
+  const products = useSelector(productSelector) as TypeProduct[];
+  const groups = useSelector(groupSelector) as TypeGroup[];
+  const clusters = useSelector(clusterSelector) as TypeCluster[];
   const showDeleteConfirm = (product: TypeProduct) => {
     confirm({
       title: 'Are you sure delete this product?',
@@ -132,7 +130,7 @@ export default function Products() {
                 key={input.name}
                 name={input.name as keyof FormPayload}
                 control={control}
-                render={({ field, fieldState }) => (
+                render={({ field }) => (
                   <Input
                     {...field}
                     {...input}

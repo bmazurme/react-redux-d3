@@ -7,10 +7,9 @@ import {
   List, Typography, Button, Tooltip, Modal, Input, Row,
 } from 'antd';
 import { EditOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+
 import makeDataSelector from '../../store/makeDataSelector';
 import { setGroups, setVersion } from '../../store';
-
-import { TypeGroup, TypeProduct, TypeCluster } from '../object';
 
 type FormPayload = {
   value: string;
@@ -20,7 +19,7 @@ type FormPayload = {
 const inputs = [{ name: 'label', placeholder: 'Group name', required: true }];
 const { confirm } = Modal;
 
-const clusterelector = makeDataSelector('cluster');
+const clusterSelector = makeDataSelector('cluster');
 const groupSelector = makeDataSelector('group');
 const productSelector = makeDataSelector('product');
 
@@ -31,9 +30,9 @@ export default function Groups() {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const closeAddModal = () => setIsModalOpen(false);
-  const clusters = useSelector(clusterelector) as unknown as TypeCluster[];
-  const groups = useSelector(groupSelector) as unknown as TypeGroup[];
-  const products = useSelector(productSelector) as unknown as TypeProduct[];
+  const clusters = useSelector(clusterSelector) as TypeCluster[];
+  const groups = useSelector(groupSelector) as TypeGroup[];
+  const products = useSelector(productSelector) as TypeProduct[];
 
   const showDeleteConfirm = (group: TypeGroup) => {
     confirm({
@@ -122,7 +121,7 @@ export default function Groups() {
                 key={input.name}
                 name={input.name as keyof FormPayload}
                 control={control}
-                render={({ field, fieldState }) => (
+                render={({ field }) => (
                   <Input
                     {...field}
                     {...input}

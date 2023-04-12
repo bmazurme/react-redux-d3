@@ -1,3 +1,34 @@
+type TypeProduct = {
+  id: number;
+  name: string;
+  description: string;
+  cluster: string;
+  group: string;
+};
+
+type TypeGroup = {
+  value: string;
+  label: string;
+};
+
+type TypeCluster = {
+  value: string;
+  label: string;
+};
+
+type TypeAttributes = {
+  count?: number;
+  groups?: string;
+  type: string;
+  id?: number;
+};
+
+type TypeNode = {
+  name: string;
+  attributes: TypeAttributes;
+  children?: TypeNode[]
+}
+
 type User = {
   id: number;
   firstName: string;
@@ -16,7 +47,3 @@ type Action<T> = {
 };
 
 type Reducer<T> = (state: T, action: Action<T>) => T;
-
-type LeaderboardApiResponse = {
-  data: User & { score: number };
-}[];

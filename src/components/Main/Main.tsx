@@ -12,11 +12,17 @@ import Tree from 'react-d3-tree';
 
 import ModalProductEdit from '../ModalProductEdit';
 import ModalEditGroup from '../ModalEditGroup';
-import ModalCluster from '../ModalCluster';
+import ModalEditCluster from '../ModalEditCluster';
+
 import makeDataSelector from '../../store/makeDataSelector';
 import { useCenteredTree, Point } from './helpers';
 import { setProducts, setVersion } from '../../store';
-import { TypeProduct, TypeCluster, TypeGroup } from '../object';
+
+type TypeNode = {
+  name: string;
+  attributes: { id: string };
+  children: TypeNode[];
+}
 
 type UseUserData = [Point, (v: HTMLDivElement | null) => void];
 
@@ -40,10 +46,15 @@ export default function Main() {
     id: 0,
   });
   const [grp, setGrp] = useState({ value: '', label: '', children: [] });
-  const [cltr, setCltr] = useState({ value: '', label: '' });
-  const products = useSelector(productSelector) as unknown as TypeProduct[];
-  const groupsDict = useSelector(groupSelector) as unknown as TypeGroup[];
-  const clustersDict = useSelector(clusterSelector) as unknown as TypeCluster[];
+  const [cltr, setCltr] = useState<{ value: string, label: string, children: TypeNode[] }>({
+    value: '',
+    label: '',
+    children: [],
+  });
+  const products = useSelector(productSelector) as TypeProduct[];
+  const groupsDict = useSelector(groupSelector) as TypeGroup[];
+  const clustersDict = useSelector(clusterSelector) as TypeCluster[];
+
   const clusters = Array.from(new Set(products.map(({ cluster }) => cluster)));
   const groups = Array.from(new Set(products.map(({ group }) => group)));
   const showDeleteConfirm = (product: TypeProduct
@@ -109,7 +120,6 @@ export default function Main() {
       })),
     })),
   };
-  // console.log(tree);
 
   const [translate, containerRef] = useCenteredTree() as unknown as UseUserData;
   const nodeSize = { x: 250, y: 250 };
@@ -129,8 +139,11 @@ export default function Main() {
     setIsModalGroupOpen(true);
   };
 
-  const showModalCluster = (c: TypeGroup & { attributes: Record<string, string> }) => {
-    setCltr(clustersDict.find((x) => x.value === c.attributes.id)!);
+  const showModalCluster = (c: TypeNode) => {
+    setCltr({
+      ...clustersDict.find((x) => x.value === c.attributes.id)!,
+      children: c.children,
+    });
     setIsModalClusterOpen(true);
   };
 
@@ -169,7 +182,9 @@ export default function Main() {
               shape="circle"
               icon={<DeleteOutlined />}
               onClick={() => showDeleteConfirm(nodeDatum)}
-              disabled={nodeDatum.attributes.type === 'group' || nodeDatum.attributes.type === 'cluster' || nodeDatum.attributes.type === 'clusters'}
+              disabled={nodeDatum.attributes.type === 'group'
+                || nodeDatum.attributes.type === 'cluster'
+                || nodeDatum.attributes.type === 'clusters'}
             />,
           ]}
         />
@@ -202,7 +217,7 @@ export default function Main() {
         closeModal={closeModalGroup}
         currentGroup={grp}
       />
-      <ModalCluster
+      <ModalEditCluster
         isOpen={isModalClusterOpen}
         closeModal={closeModalCluster}
         currentCluster={cltr}

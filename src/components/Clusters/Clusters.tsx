@@ -10,8 +10,6 @@ import { EditOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-desi
 import makeDataSelector from '../../store/makeDataSelector';
 import { setClusters, setVersion } from '../../store';
 
-import { TypeCluster, TypeProduct, TypeGroup } from '../object';
-
 type FormPayload = {
   value: string;
   label: string;
@@ -30,9 +28,9 @@ export default function Clusters() {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const closeAddModal = () => setIsModalOpen(false);
-  const clusters = useSelector(clusterSelector) as unknown as TypeCluster[];
-  const groups = useSelector(groupSelector) as unknown as TypeGroup[];
-  const products = useSelector(productSelector) as unknown as TypeProduct[];
+  const clusters = useSelector(clusterSelector) as TypeCluster[];
+  const groups = useSelector(groupSelector) as TypeGroup[];
+  const products = useSelector(productSelector) as TypeProduct[];
 
   const showDeleteConfirm = (cluster: TypeCluster) => {
     confirm({
@@ -45,7 +43,7 @@ export default function Clusters() {
       onOk() {
         const arr = clusters.filter(({ value }) => value !== cluster.value);
         dispatch(setClusters(arr));
-        // dispatch(setVersion(arr));
+        dispatch(setVersion({ products, groups, clusters: arr }));
       },
       onCancel() {
         console.log('Cancel');
@@ -66,11 +64,7 @@ export default function Clusters() {
     try {
       const arr = clusters.map((item) => (item.value === data.value ? data : item));
       dispatch(setClusters(arr));
-      dispatch(setVersion({
-        products,
-        groups,
-        clusters: arr,
-      }));
+      dispatch(setVersion({ products, groups, clusters: arr }));
       setIsModalOpen(false);
     } catch ({ status, data: { reason } }) {
       errorHandler(new Error(`${status}: ${reason}`));
@@ -108,12 +102,7 @@ export default function Clusters() {
           </List.Item>
         )}
       />
-      <Modal
-        title="Cluster card"
-        open={isModalOpen}
-        onCancel={closeAddModal}
-        footer={[]}
-      >
+      <Modal title="Cluster card" open={isModalOpen} onCancel={closeAddModal} footer={[]}>
         <form onSubmit={onSubmit} key="form">
           <Row>
             {inputs.map((input) => (
@@ -121,7 +110,7 @@ export default function Clusters() {
                 key={input.name}
                 name={input.name as keyof FormPayload}
                 control={control}
-                render={({ field, fieldState }) => (
+                render={({ field }) => (
                   <Input
                     {...field}
                     {...input}

@@ -5,10 +5,10 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(ntlstl.dev www.ntlstl.dev)
+domains=(domain.dev www.domain.dev)
 rsa_key_size=4096
 data_path="./data/certbot"
-email="str-22@ya.ru" # Adding a valid address is strongly recommended
+email="email@ya.ru" # Adding a valid address is strongly recommended
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
 if [ -d "$data_path" ]; then
