@@ -1,4 +1,4 @@
-import { TypeProduct } from '../src/components/Main/object';
+import { TypeProduct } from '../src/components/core/TreeBlock/object';
 
 const products: TypeProduct[] = [
   {

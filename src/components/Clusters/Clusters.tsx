@@ -1,75 +1,42 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useErrorHandler } from 'react-error-boundary';
-import { useForm, Controller } from 'react-hook-form';
 
 import {
-  List, Typography, Button, Tooltip, Modal, Input, Row,
+  List, Typography, Button, Tooltip,
 } from 'antd';
-import { EditOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+
+import ModalCluster from '../ModalCluster';
+import showDeleteConfirm from '../showDeleteConfirm';
+
 import makeDataSelector from '../../store/makeDataSelector';
 import { setClusters, setVersion } from '../../store';
 
-type FormPayload = {
-  value: string;
-  label: string;
-};
-
-const inputs = [{ name: 'label', placeholder: 'Cluster name', required: true }];
-const { confirm } = Modal;
 const clusterSelector = makeDataSelector('cluster');
 const groupSelector = makeDataSelector('group');
 const productSelector = makeDataSelector('product');
 
-const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
-
 export default function Clusters() {
-  const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
+  const [cltr, setCltr] = useState<{ value: string, label: string }>({ value: '', label: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const closeAddModal = () => setIsModalOpen(false);
+
   const clusters = useSelector(clusterSelector) as TypeCluster[];
   const groups = useSelector(groupSelector) as TypeGroup[];
   const products = useSelector(productSelector) as TypeProduct[];
 
-  const showDeleteConfirm = (cluster: TypeCluster) => {
-    confirm({
-      title: 'Are you sure delete this cluster?',
-      icon: <ExclamationCircleFilled />,
-      content: 'Some descriptions',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        const arr = clusters.filter(({ value }) => value !== cluster.value);
-        dispatch(setClusters(arr));
-        dispatch(setVersion({ products, groups, clusters: arr }));
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
-    });
+  const callback = (cluster: Record<string, string | number>) => {
+    const arr = clusters.filter(({ value }) => value !== cluster.value);
+    dispatch(setClusters(arr));
+    dispatch(setVersion({ products, groups, clusters: arr }));
   };
-
-  const { control, handleSubmit, reset } = useForm<FormPayload>({
-    defaultValues: { value: '', label: '' },
-  });
 
   const showModal = (cluster: TypeCluster) => {
-    reset(cluster);
+    setCltr(cluster);
     setIsModalOpen(true);
   };
-
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      const arr = clusters.map((item) => (item.value === data.value ? data : item));
-      dispatch(setClusters(arr));
-      dispatch(setVersion({ products, groups, clusters: arr }));
-      setIsModalOpen(false);
-    } catch ({ status, data: { reason } }) {
-      errorHandler(new Error(`${status}: ${reason}`));
-    }
-  });
 
   return (
     <>
@@ -95,39 +62,14 @@ export default function Clusters() {
                 size="small"
                 shape="circle"
                 icon={<DeleteOutlined />}
-                onClick={() => showDeleteConfirm(cluster)}
+                onClick={() => showDeleteConfirm(callback, cluster as Record<string, string | number>)}
                 disabled={products.filter((x) => x.cluster === cluster.value).length > 0}
               />
             </Tooltip>
           </List.Item>
         )}
       />
-      <Modal title="Cluster card" open={isModalOpen} onCancel={closeAddModal} footer={[]}>
-        <form onSubmit={onSubmit} key="form">
-          <Row>
-            {inputs.map((input) => (
-              <Controller
-                key={input.name}
-                name={input.name as keyof FormPayload}
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    {...input}
-                    style={{ margin: '8px 0' }}
-                  />
-                )}
-              />
-            ))}
-          </Row>
-          <Button type="primary" onClick={closeAddModal} style={buttonStyle}>
-            Cancel
-          </Button>
-          <Button htmlType="submit" type="primary" style={buttonStyle}>
-            Submit
-          </Button>
-        </form>
-      </Modal>
+      <ModalCluster isOpen={isModalOpen} closeModal={closeAddModal} currentCluster={cltr} />
     </>
   );
 }

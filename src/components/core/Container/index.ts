@@ -1,3 +1,3 @@
-import Content from './Container';
+import Container from './Container';
 
-export default Content;
+export default Container;

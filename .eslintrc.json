@@ -59,11 +59,12 @@
           ]
     },
     "globals": {
-        "TypeProject": "readonly",
+        "TypeProduct": "readonly",
         "TypeGroup":  "readonly",
         "TypeCluster":  "readonly",
-        "TypeVersion":  "readonly"
+        "TypeVersion":  "readonly",
+        "TypeNode": "readonly"
     }
-        
+
     // "import/extensions": ["never"]
 }

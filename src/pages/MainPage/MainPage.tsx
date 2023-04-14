@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Main from '../../components/Main';
+import TreeBlock from '../../components/core/TreeBlock';
 import Content from '../../components/core/Container';
 
 export default function MainPage() {
   return (
     <Content heading="Main">
-      <Main />
+      <TreeBlock />
     </Content>
   );
 }

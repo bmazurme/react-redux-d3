@@ -3,37 +3,31 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Card, Modal } from 'antd';
+import { Button, Card } from 'antd';
 import {
-  EditOutlined, DeleteOutlined, EyeOutlined, EyeInvisibleOutlined, ExclamationCircleFilled,
+  EditOutlined, DeleteOutlined, EyeOutlined, EyeInvisibleOutlined,
 } from '@ant-design/icons';
 
 import Tree from 'react-d3-tree';
 
-import ModalProductEdit from '../ModalProductEdit';
-import ModalEditGroup from '../ModalEditGroup';
-import ModalEditCluster from '../ModalEditCluster';
+import ModalEditProduct from '../../ModalEditProduct';
+import ModalGroupEdit from '../../ModalGroupEdit';
+import ModalClusterEdit from '../../ModalClusterEdit';
+import showDeleteConfirm from '../../showDeleteConfirm';
 
-import makeDataSelector from '../../store/makeDataSelector';
+import makeDataSelector from '../../../store/makeDataSelector';
 import { useCenteredTree, Point } from './helpers';
-import { setProducts, setVersion } from '../../store';
-
-type TypeNode = {
-  name: string;
-  attributes: { id: string };
-  children: TypeNode[];
-}
+import { setProducts, setVersion } from '../../../store';
 
 type UseUserData = [Point, (v: HTMLDivElement | null) => void];
 
 const containerStyles = { width: '100%', height: '100%', background: '#eee' };
-const { confirm } = Modal;
 
 const productSelector = makeDataSelector('product');
 const groupSelector = makeDataSelector('group');
 const clusterSelector = makeDataSelector('cluster');
 
-export default function Main() {
+export default function TreeBlock() {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalGroupOpen, setIsModalGroupOpen] = useState(false);
@@ -57,30 +51,17 @@ export default function Main() {
 
   const clusters = Array.from(new Set(products.map(({ cluster }) => cluster)));
   const groups = Array.from(new Set(products.map(({ group }) => group)));
-  const showDeleteConfirm = (product: TypeProduct
-    & { id: number, attributes: Record<string, string | number> }) => {
-    confirm({
-      title: 'Are you sure delete this product?',
-      icon: <ExclamationCircleFilled />,
-      content: 'Some descriptions',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        if (product.attributes.type === 'product') {
-          const arr = products.filter(({ id }) => id !== product.attributes.id);
-          dispatch(setProducts(arr));
-          dispatch(setVersion({
-            products: arr,
-            groups: groupsDict,
-            clusters: clustersDict,
-          }));
-        }
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
-    });
+
+  const callback = (attributes: Record<string, string | number>) => {
+    if (attributes.type === 'product') {
+      const arr = products.filter(({ id }) => id !== attributes.id);
+      dispatch(setProducts(arr));
+      dispatch(setVersion({
+        products: arr,
+        groups: groupsDict,
+        clusters: clustersDict,
+      }));
+    }
   };
 
   const tree = {
@@ -142,7 +123,7 @@ export default function Main() {
   const showModalCluster = (c: TypeNode) => {
     setCltr({
       ...clustersDict.find((x) => x.value === c.attributes.id)!,
-      children: c.children,
+      children: c.children!,
     });
     setIsModalClusterOpen(true);
   };
@@ -181,7 +162,7 @@ export default function Main() {
               size="small"
               shape="circle"
               icon={<DeleteOutlined />}
-              onClick={() => showDeleteConfirm(nodeDatum)}
+              onClick={() => showDeleteConfirm(callback, nodeDatum.attributes)}
               disabled={nodeDatum.attributes.type === 'group'
                 || nodeDatum.attributes.type === 'cluster'
                 || nodeDatum.attributes.type === 'clusters'}
@@ -207,17 +188,17 @@ export default function Main() {
           })}
         />
       </div>
-      <ModalProductEdit
-        isModalOpen={isModalOpen}
+      <ModalEditProduct
+        isOpen={isModalOpen}
         closeModal={closeModal}
-        pr={pr}
+        currentProduct={pr}
       />
-      <ModalEditGroup
+      <ModalGroupEdit
         isOpen={isModalGroupOpen}
         closeModal={closeModalGroup}
         currentGroup={grp}
       />
-      <ModalEditCluster
+      <ModalClusterEdit
         isOpen={isModalClusterOpen}
         closeModal={closeModalCluster}
         currentCluster={cltr}

@@ -20,7 +20,7 @@ type TypeAttributes = {
   count?: number;
   groups?: string;
   type: string;
-  id?: number;
+  id?: string;
 };
 
 type TypeNode = {

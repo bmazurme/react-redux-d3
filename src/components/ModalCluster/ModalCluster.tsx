@@ -15,15 +15,18 @@ type FormPayload = {
 const clusterSelector = makeDataSelector('cluster');
 const groupSelector = makeDataSelector('group');
 const productSelector = makeDataSelector('product');
+
 const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
 
 export default function ModalCluster({ isOpen, closeModal, currentCluster }
   : { isOpen: boolean, closeModal: () => void, currentCluster?: TypeCluster }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
+
   const clusters = useSelector(clusterSelector) as TypeCluster[];
   const groups = useSelector(groupSelector) as TypeGroup[];
   const products = useSelector(productSelector) as TypeProduct[];
+
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: { value: '', label: '' },
   });

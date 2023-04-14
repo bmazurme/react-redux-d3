@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useErrorHandler } from 'react-error-boundary';
 import { useForm, Controller } from 'react-hook-form';
+import { useErrorHandler } from 'react-error-boundary';
+import { useSelector, useDispatch } from 'react-redux';
+
 import {
   Button, Modal, Input, Select, Row,
 } from 'antd';
-
 import makeDataSelector from '../../store/makeDataSelector';
-import { setProducts, setVersion } from '../../store';
+import { setProducts, setVersion, setProduct } from '../../store';
 
 type FormPayload = {
   name: string;
@@ -17,24 +17,29 @@ type FormPayload = {
   id: number;
 };
 
-const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 0 8px 8px' };
-const selectStyle = { width: '100%', margin: '8px 0' };
-
 const inputs = [
   { name: 'name', placeholder: 'Product name', required: true },
   { name: 'description', placeholder: 'Description name' },
 ];
+
 const productSelector = makeDataSelector('product');
 const groupSelector = makeDataSelector('group');
 const clusterSelector = makeDataSelector('cluster');
 
-export default function Main({ isModalOpen, closeModal, pr }
-  : { isModalOpen: boolean, closeModal: () => void, pr: TypeProduct }) {
+const getId = (products: TypeProduct[]) => products.length
+  ?? products.reduce((prev, cur) => (cur.id > prev.id ? cur : prev), { id: -Infinity }).id;
+
+const selectStyle = { width: '100%', margin: '8px 0' };
+const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
+
+export default function ModalEditProduct({ isOpen, closeModal, currentProduct }
+  : { isOpen: boolean, closeModal: () => void, currentProduct?: any }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
+
   const products = useSelector(productSelector) as TypeProduct[];
-  const groupsDict = useSelector(groupSelector) as TypeGroup[];
-  const clustersDict = useSelector(clusterSelector) as TypeCluster[];
+  const groups = useSelector(groupSelector) as TypeGroup[];
+  const clusters = useSelector(clusterSelector) as TypeCluster[];
 
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: {
@@ -48,13 +53,18 @@ export default function Main({ isModalOpen, closeModal, pr }
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const arr = products.map((item) => (item.id === data.id ? data : item));
-      dispatch(setProducts(arr));
-      dispatch(setVersion({
-        products: arr,
-        groups: groupsDict,
-        clusters: groupsDict,
-      }));
+      if (currentProduct) {
+        const arr = products.map((item) => (item.id === data.id ? data : item));
+        dispatch(setProducts(arr));
+        dispatch(setVersion({ products: arr, groups, clusters }));
+      } else {
+        dispatch(setProduct({ ...data, id: getId(products) }));
+        dispatch(setVersion({
+          products: [...products, { ...data, id: getId(products) }],
+          groups,
+          clusters,
+        }));
+      }
       closeModal();
     } catch ({ status, data: { reason } }) {
       errorHandler(new Error(`${status}: ${reason}`));
@@ -62,18 +72,44 @@ export default function Main({ isModalOpen, closeModal, pr }
   });
 
   useEffect(() => {
-    reset(pr);
-  }, [isModalOpen]);
+    if (currentProduct) {
+      reset(currentProduct);
+    } else {
+      reset();
+    }
+  }, [currentProduct]);
 
   return (
     <Modal
       title="Product card"
-      open={isModalOpen}
+      open={isOpen}
       onCancel={closeModal}
       footer={[]}
     >
       <form onSubmit={onSubmit} key="form">
         <Row>
+          <Controller
+            name={'cluster' as keyof FormPayload}
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                style={selectStyle}
+                options={clusters}
+              />
+            )}
+          />
+          <Controller
+            name={'group' as keyof FormPayload}
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                style={selectStyle}
+                options={groups}
+              />
+            )}
+          />
           {inputs.map((input) => (
             <Controller
               key={input.name}
@@ -88,28 +124,6 @@ export default function Main({ isModalOpen, closeModal, pr }
               )}
             />
           ))}
-          <Controller
-            name={'group' as keyof FormPayload}
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                style={selectStyle}
-                options={groupsDict}
-              />
-            )}
-          />
-          <Controller
-            name={'cluster' as keyof FormPayload}
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                style={selectStyle}
-                options={clustersDict}
-              />
-            )}
-          />
         </Row>
         <Button type="primary" onClick={closeModal} style={buttonStyle}>
           Cancel

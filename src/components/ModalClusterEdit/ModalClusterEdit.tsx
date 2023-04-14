@@ -11,19 +11,22 @@ type FormPayload = {
   cluster: string;
 };
 
-const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
-const selectStyle = { width: '100%', margin: '8px 0' };
 const groupSelector = makeDataSelector('group');
 const clusterSelector = makeDataSelector('cluster');
 const productSelector = makeDataSelector('product');
 
-export default function ModalEditCluster({ isOpen, closeModal, currentCluster }
+const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
+const selectStyle = { width: '100%', margin: '8px 0' };
+
+export default function ModalClusterEdit({ isOpen, closeModal, currentCluster }
   : { isOpen: boolean, closeModal: () => void, currentCluster?: any }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
+
   const groups = useSelector(groupSelector) as TypeGroup[];
   const clusters = useSelector(clusterSelector) as TypeCluster[];
   const products = useSelector(productSelector) as TypeProduct[];
+
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: { cluster: '' },
   });
