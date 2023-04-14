@@ -5,19 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal, Select } from 'antd';
 
 import { setProducts, setVersion } from '../../store';
-import makeDataSelector from '../../store/makeDataSelector';
+import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+
+import { buttonOkStyle, buttonCancelStyle, selectStyle } from '../styleModal';
 
 type FormPayload = {
   group: string;
   cluster: string;
 };
-
-const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
-const selectStyle = { width: '100%', margin: '8px 0' };
-
-const groupSelector = makeDataSelector('group');
-const clusterSelector = makeDataSelector('cluster');
-const productSelector = makeDataSelector('product');
 
 export default function ModalGroupEdit({ isOpen, closeModal, currentGroup }
   : { isOpen: boolean, closeModal: () => void, currentGroup?: any }) {
@@ -82,10 +77,10 @@ export default function ModalGroupEdit({ isOpen, closeModal, currentGroup }
             />
           )}
         />
-        <Button type="primary" onClick={closeModal} style={buttonStyle}>
+        <Button type="primary" onClick={closeModal} style={buttonCancelStyle}>
           Cancel
         </Button>
-        <Button htmlType="submit" type="primary" style={buttonStyle}>
+        <Button htmlType="submit" type="primary" style={buttonOkStyle}>
           Submit
         </Button>
       </form>

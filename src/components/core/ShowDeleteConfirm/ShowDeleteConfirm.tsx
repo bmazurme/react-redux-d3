@@ -4,7 +4,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons/lib/icons';
 
 const { confirm } = Modal;
 
-const showDeleteConfirm = (
+const ShowDeleteConfirm = (
   callback: (c: Record<string, string | number>) => void,
   cluster: Record<string, string | number>,
 ) => {
@@ -24,4 +24,4 @@ const showDeleteConfirm = (
   });
 };
 
-export default showDeleteConfirm;
+export default ShowDeleteConfirm;

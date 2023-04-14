@@ -5,18 +5,14 @@ import { useForm, Controller } from 'react-hook-form';
 import { Button, Modal, Input } from 'antd';
 
 import { setCluster, setVersion, setClusters } from '../../store';
-import makeDataSelector from '../../store/makeDataSelector';
+import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+
+import { buttonOkStyle, buttonCancelStyle } from '../styleModal';
 
 type FormPayload = {
   value: string;
   label: string;
 };
-
-const clusterSelector = makeDataSelector('cluster');
-const groupSelector = makeDataSelector('group');
-const productSelector = makeDataSelector('product');
-
-const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
 
 export default function ModalCluster({ isOpen, closeModal, currentCluster }
   : { isOpen: boolean, closeModal: () => void, currentCluster?: TypeCluster }) {
@@ -40,12 +36,9 @@ export default function ModalCluster({ isOpen, closeModal, currentCluster }
         dispatch(setClusters(arr));
         dispatch(setVersion({ products, groups, clusters: arr }));
       } else {
-        dispatch(setCluster({ value: clusters.length.toString(), label }));
-        dispatch(setVersion({
-          products,
-          groups,
-          clusters: [...clusters, { value: clusters.length.toString(), label }],
-        }));
+        const clusterNew = { value: clusters.length.toString(), label };
+        dispatch(setCluster(clusterNew));
+        dispatch(setVersion({ products, groups, clusters: [...clusters, clusterNew] }));
       }
 
       reset();
@@ -82,10 +75,10 @@ export default function ModalCluster({ isOpen, closeModal, currentCluster }
             />
           )}
         />
-        <Button type="primary" onClick={closeModal} style={buttonStyle}>
+        <Button type="primary" onClick={closeModal} style={buttonCancelStyle}>
           Cancel
         </Button>
-        <Button htmlType="submit" type="primary" style={buttonStyle}>
+        <Button htmlType="submit" type="primary" style={buttonOkStyle}>
           Submit
         </Button>
       </form>

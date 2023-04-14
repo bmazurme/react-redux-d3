@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-underscore-dangle */
 import React, { useState } from 'react';
@@ -13,19 +12,17 @@ import Tree from 'react-d3-tree';
 import ModalEditProduct from '../../ModalEditProduct';
 import ModalGroupEdit from '../../ModalGroupEdit';
 import ModalClusterEdit from '../../ModalClusterEdit';
-import showDeleteConfirm from '../../showDeleteConfirm';
+import ShowDeleteConfirm from '../ShowDeleteConfirm/ShowDeleteConfirm';
 
-import makeDataSelector from '../../../store/makeDataSelector';
 import { useCenteredTree, Point } from './helpers';
 import { setProducts, setVersion } from '../../../store';
+import { groupSelector, clusterSelector, productSelector } from '../../../store/selectors';
+
+import buildTree from './buildTree';
 
 type UseUserData = [Point, (v: HTMLDivElement | null) => void];
 
 const containerStyles = { width: '100%', height: '100%', background: '#eee' };
-
-const productSelector = makeDataSelector('product');
-const groupSelector = makeDataSelector('group');
-const clusterSelector = makeDataSelector('cluster');
 
 export default function TreeBlock() {
   const dispatch = useDispatch();
@@ -41,66 +38,26 @@ export default function TreeBlock() {
   });
   const [grp, setGrp] = useState({ value: '', label: '', children: [] });
   const [cltr, setCltr] = useState<{ value: string, label: string, children: TypeNode[] }>({
-    value: '',
-    label: '',
-    children: [],
+    value: '', label: '', children: [],
   });
   const products = useSelector(productSelector) as TypeProduct[];
-  const groupsDict = useSelector(groupSelector) as TypeGroup[];
-  const clustersDict = useSelector(clusterSelector) as TypeCluster[];
+  const groups = useSelector(groupSelector) as TypeGroup[];
+  const clusters = useSelector(clusterSelector) as TypeCluster[];
 
-  const clusters = Array.from(new Set(products.map(({ cluster }) => cluster)));
-  const groups = Array.from(new Set(products.map(({ group }) => group)));
+  const clustersArray = Array.from(new Set(products.map(({ cluster }) => cluster)));
+  const groupsArray = Array.from(new Set(products.map(({ group }) => group)));
 
   const callback = (attributes: Record<string, string | number>) => {
     if (attributes.type === 'product') {
       const arr = products.filter(({ id }) => id !== attributes.id);
       dispatch(setProducts(arr));
-      dispatch(setVersion({
-        products: arr,
-        groups: groupsDict,
-        clusters: clustersDict,
-      }));
+      dispatch(setVersion({ products: arr, groups, clusters }));
     }
   };
 
-  const tree = {
-    name: 'Clusters',
-    attributes: {
-      count: clusters.length,
-      groups: groups.length,
-      type: 'clusters',
-    },
-    children: clusters.map((item) => ({
-      name: clustersDict.find((x) => x.value === item)?.label ?? '',
-      attributes: {
-        count: Array.from(new Set(products.filter((x) => item === x.cluster))).length ?? 0,
-        groups: Array.from(new Set(products.filter((x) => item === x.cluster)
-          .map(({ group }) => group))).length ?? 0,
-        id: item,
-        type: 'cluster',
-      },
-      children: Array.from(new Set(products.filter((x) => item === x.cluster)
-        .map(({ group }) => group))).map((g) => ({
-        name: groupsDict.find((x) => x.value === g)?.label ?? '',
-        attributes: {
-          count: products.filter((x) => item === x.cluster)
-            .filter((x) => g === x.group).length ?? 0,
-          groups: '===',
-          id: g,
-          type: 'group',
-        },
-        children: products.filter((x) => item === x.cluster)
-          .filter((x) => g === x.group).map((prd) => ({
-            name: prd.name,
-            attributes: {
-              id: prd.id,
-              type: 'product',
-            },
-          })),
-      })),
-    })),
-  };
+  const tree = buildTree({
+    clusters, groups, products, clustersArray, groupsArray,
+  });
 
   const [translate, containerRef] = useCenteredTree() as unknown as UseUserData;
   const nodeSize = { x: 250, y: 250 };
@@ -116,16 +73,28 @@ export default function TreeBlock() {
 
   const showModalGroup = (g: TypeGroup & { attributes: Record<string, string>,
     children: any }) => {
-    setGrp({ ...groupsDict.find((x) => x.value === g.attributes.id)!, children: g.children });
+    setGrp({ ...groups.find((x) => x.value === g.attributes.id)!, children: g.children });
     setIsModalGroupOpen(true);
   };
 
   const showModalCluster = (c: TypeNode) => {
     setCltr({
-      ...clustersDict.find((x) => x.value === c.attributes.id)!,
-      children: c.children!,
+      ...clusters.find((x) => x.value === c.attributes.id)!, children: c.children!,
     });
     setIsModalClusterOpen(true);
+  };
+
+  const disabled = (type: string) => type === 'group' || type === 'cluster' || type === 'clusters';
+
+  const returnDialog = (nodeDatum: any) => {
+    if (nodeDatum.attributes.type === 'group') {
+      return showModalGroup(nodeDatum);
+    }
+    if (nodeDatum.attributes.type === 'cluster') {
+      return showModalCluster(nodeDatum);
+    }
+
+    return showModal(nodeDatum);
   };
 
   const closeModal = () => setIsModalOpen(false);
@@ -149,12 +118,7 @@ export default function TreeBlock() {
               size="small"
               shape="circle"
               icon={<EditOutlined />}
-              onClick={() => (nodeDatum.attributes.type === 'group'
-                ? showModalGroup(nodeDatum)
-                : nodeDatum.attributes.type === 'cluster'
-                  ? showModalCluster(nodeDatum)
-                  : showModal(nodeDatum)
-              )}
+              onClick={() => returnDialog(nodeDatum)}
               disabled={nodeDatum.attributes.type === 'clusters'}
             />,
             <Button
@@ -162,10 +126,8 @@ export default function TreeBlock() {
               size="small"
               shape="circle"
               icon={<DeleteOutlined />}
-              onClick={() => showDeleteConfirm(callback, nodeDatum.attributes)}
-              disabled={nodeDatum.attributes.type === 'group'
-                || nodeDatum.attributes.type === 'cluster'
-                || nodeDatum.attributes.type === 'clusters'}
+              onClick={() => ShowDeleteConfirm(callback, nodeDatum.attributes)}
+              disabled={disabled(nodeDatum.attributes.type)}
             />,
           ]}
         />
@@ -174,35 +136,22 @@ export default function TreeBlock() {
   );
 
   return (
-    <>
-      <div style={containerStyles} ref={containerRef}>
-        <Tree
-          data={tree}
-          orientation="vertical"
-          nodeSize={nodeSize}
-          separation={separation}
-          translate={translate}
-          pathFunc="step"
-          renderCustomNodeElement={(rd3tProps) => renderForeignObjectNode({
-            ...rd3tProps, foreignObjectProps,
-          })}
-        />
-      </div>
-      <ModalEditProduct
-        isOpen={isModalOpen}
-        closeModal={closeModal}
-        currentProduct={pr}
+    <div style={containerStyles} ref={containerRef}>
+      <Tree
+        data={tree}
+        orientation="vertical"
+        nodeSize={nodeSize}
+        separation={separation}
+        translate={translate}
+        pathFunc="step"
+        renderCustomNodeElement={(rd3tProps) => renderForeignObjectNode({
+          ...rd3tProps, foreignObjectProps,
+        })}
       />
-      <ModalGroupEdit
-        isOpen={isModalGroupOpen}
-        closeModal={closeModalGroup}
-        currentGroup={grp}
-      />
-      <ModalClusterEdit
-        isOpen={isModalClusterOpen}
-        closeModal={closeModalCluster}
-        currentCluster={cltr}
-      />
-    </>
+      <ModalEditProduct isOpen={isModalOpen} closeModal={closeModal} currentProduct={pr} />
+      <ModalGroupEdit isOpen={isModalGroupOpen} closeModal={closeModalGroup} currentGroup={grp} />
+      {/* eslint-disable-next-line max-len */}
+      <ModalClusterEdit isOpen={isModalClusterOpen} closeModal={closeModalCluster} currentCluster={cltr} />
+    </div>
   );
 }

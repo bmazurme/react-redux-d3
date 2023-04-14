@@ -22,48 +22,26 @@ export default function Container({ heading }: { heading: string | undefined }) 
     <>
       <Row>
         <Col span={3}>
-          <Button
-            type="primary"
-            icon={<PlusSquareOutlined />}
-            onClick={openAddModal}
-          >
+          <Button type="primary" icon={<PlusSquareOutlined />} onClick={openAddModal}>
             Add Product
           </Button>
         </Col>
         <Col span={3}>
-          <Button
-            type="primary"
-            icon={<PlusSquareOutlined />}
-            onClick={openAddGroupModal}
-          >
+          <Button type="primary" icon={<PlusSquareOutlined />} onClick={openAddGroupModal}>
             Add group
           </Button>
         </Col>
         <Col span={3}>
-          <Button
-            type="primary"
-            icon={<PlusSquareOutlined />}
-            onClick={openAddClusterModal}
-          >
+          <Button type="primary" icon={<PlusSquareOutlined />} onClick={openAddClusterModal}>
             Add cluster
           </Button>
         </Col>
         <Col span={3}>{heading}</Col>
-        <Col span={12} />
       </Row>
 
-      <ModalEditProducts
-        isOpen={isModalOpen}
-        closeModal={closeAddModal}
-      />
-      <ModalGroup
-        isOpen={isModalGroupOpen}
-        closeModal={closeAddGroupModal}
-      />
-      <ModalCluster
-        isOpen={isModalClusterOpen}
-        closeModal={closeAddClusterModal}
-      />
+      <ModalEditProducts isOpen={isModalOpen} closeModal={closeAddModal} />
+      <ModalGroup isOpen={isModalGroupOpen} closeModal={closeAddGroupModal} />
+      <ModalCluster isOpen={isModalClusterOpen} closeModal={closeAddClusterModal} />
     </>
   );
 }

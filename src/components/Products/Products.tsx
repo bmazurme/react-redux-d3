@@ -8,13 +8,10 @@ import {
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import ModalEditProduct from '../ModalEditProduct';
-import showDeleteConfirm from '../showDeleteConfirm';
-import makeDataSelector from '../../store/makeDataSelector';
-import { setProducts, setVersion } from '../../store';
+import ShowDeleteConfirm from '../core/ShowDeleteConfirm/ShowDeleteConfirm';
 
-const productSelector = makeDataSelector('product');
-const groupSelector = makeDataSelector('group');
-const clusterSelector = makeDataSelector('cluster');
+import { setProducts, setVersion } from '../../store';
+import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
 
 export default function Products() {
   const dispatch = useDispatch();
@@ -31,8 +28,6 @@ export default function Products() {
   const groups = useSelector(groupSelector) as TypeGroup[];
   const clusters = useSelector(clusterSelector) as TypeCluster[];
 
-  const closeAddModal = () => setIsModalOpen(false);
-
   const callback = (product: Record<string, string | number>) => {
     const arr = products.filter(({ id }) => id !== product.id);
     dispatch(setProducts(arr));
@@ -43,6 +38,7 @@ export default function Products() {
     setPr(product);
     setIsModalOpen(true);
   };
+  const closeAddModal = () => setIsModalOpen(false);
 
   return (
     <>
@@ -68,17 +64,13 @@ export default function Products() {
                 size="small"
                 shape="circle"
                 icon={<DeleteOutlined />}
-                onClick={() => showDeleteConfirm(callback, product as Record<string, string | number>)}
+                onClick={() => ShowDeleteConfirm(callback, product as Record<string, string | number>)}
               />
             </Tooltip>
           </List.Item>
         )}
       />
-      <ModalEditProduct
-        isOpen={isModalOpen}
-        closeModal={closeAddModal}
-        currentProduct={pr}
-      />
+      <ModalEditProduct isOpen={isModalOpen} closeModal={closeAddModal} currentProduct={pr} />
     </>
   );
 }

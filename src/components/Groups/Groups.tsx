@@ -8,14 +8,10 @@ import {
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import ModalGroup from '../ModalGroup';
-import showDeleteConfirm from '../showDeleteConfirm';
+import ShowDeleteConfirm from '../core/ShowDeleteConfirm/ShowDeleteConfirm';
 
-import makeDataSelector from '../../store/makeDataSelector';
 import { setGroups, setVersion } from '../../store';
-
-const clusterSelector = makeDataSelector('cluster');
-const groupSelector = makeDataSelector('group');
-const productSelector = makeDataSelector('product');
+import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
 
 export default function Groups() {
   const dispatch = useDispatch();
@@ -62,7 +58,7 @@ export default function Groups() {
                 size="small"
                 shape="circle"
                 icon={<DeleteOutlined />}
-                onClick={() => showDeleteConfirm(callback, group as Record<string, string | number>)}
+                onClick={() => ShowDeleteConfirm(callback, group as Record<string, string | number>)}
                 disabled={products.filter((x) => x.group === group.value).length > 0}
               />
             </Tooltip>

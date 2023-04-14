@@ -5,21 +5,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal, Input } from 'antd';
 
 import { setGroup, setVersion, setGroups } from '../../store';
-import makeDataSelector from '../../store/makeDataSelector';
+import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+
+import { buttonOkStyle, buttonCancelStyle } from '../styleModal';
 
 type FormPayload = {
   label: string;
   cluster: string;
 };
 
-const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
-
-const groupSelector = makeDataSelector('group');
-const clusterSelector = makeDataSelector('cluster');
-const productSelector = makeDataSelector('product');
-
 export default function ModalGroup({ isOpen, closeModal, currentGroup }
-  : { isOpen: boolean, closeModal: () => void, currentGroup?: any }) {
+  : { isOpen: boolean, closeModal: () => void, currentGroup?: Record<string, string> }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
 
@@ -38,12 +34,9 @@ export default function ModalGroup({ isOpen, closeModal, currentGroup }
         dispatch(setGroups(groupsNew));
         dispatch(setVersion({ products, clusters, groups: [...groupsNew] }));
       } else {
-        dispatch(setGroup({ value: groups.length.toString(), label }));
-        dispatch(setVersion({
-          products,
-          clusters,
-          groups: [...groups, { value: groups.length.toString(), label }],
-        }));
+        const groupNew = { value: groups.length.toString(), label };
+        dispatch(setGroup(groupNew));
+        dispatch(setVersion({ products, clusters, groups: [...groups, groupNew] }));
       }
       reset();
       closeModal();
@@ -81,10 +74,10 @@ export default function ModalGroup({ isOpen, closeModal, currentGroup }
             />
           )}
         />
-        <Button type="primary" onClick={closeModal} style={buttonStyle}>
+        <Button type="primary" onClick={closeModal} style={buttonCancelStyle}>
           Cancel
         </Button>
-        <Button htmlType="submit" type="primary" style={buttonStyle}>
+        <Button htmlType="submit" type="primary" style={buttonOkStyle}>
           Submit
         </Button>
       </form>

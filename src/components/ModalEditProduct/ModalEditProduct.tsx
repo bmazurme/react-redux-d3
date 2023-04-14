@@ -6,8 +6,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   Button, Modal, Input, Select, Row,
 } from 'antd';
-import makeDataSelector from '../../store/makeDataSelector';
+
 import { setProducts, setVersion, setProduct } from '../../store';
+import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+
+import { buttonOkStyle, buttonCancelStyle, selectStyle } from '../styleModal';
 
 type FormPayload = {
   name: string;
@@ -22,15 +25,8 @@ const inputs = [
   { name: 'description', placeholder: 'Description name' },
 ];
 
-const productSelector = makeDataSelector('product');
-const groupSelector = makeDataSelector('group');
-const clusterSelector = makeDataSelector('cluster');
-
 const getId = (products: TypeProduct[]) => products.length
   ?? products.reduce((prev, cur) => (cur.id > prev.id ? cur : prev), { id: -Infinity }).id;
-
-const selectStyle = { width: '100%', margin: '8px 0' };
-const buttonStyle = { width: 'calc(50% - 8px)', margin: '8px 8px 8px 0' };
 
 export default function ModalEditProduct({ isOpen, closeModal, currentProduct }
   : { isOpen: boolean, closeModal: () => void, currentProduct?: any }) {
@@ -58,12 +54,9 @@ export default function ModalEditProduct({ isOpen, closeModal, currentProduct }
         dispatch(setProducts(arr));
         dispatch(setVersion({ products: arr, groups, clusters }));
       } else {
-        dispatch(setProduct({ ...data, id: getId(products) }));
-        dispatch(setVersion({
-          products: [...products, { ...data, id: getId(products) }],
-          groups,
-          clusters,
-        }));
+        const productNew = { ...data, id: getId(products) };
+        dispatch(setProduct(productNew));
+        dispatch(setVersion({ products: [...products, productNew], groups, clusters }));
       }
       closeModal();
     } catch ({ status, data: { reason } }) {
@@ -125,10 +118,10 @@ export default function ModalEditProduct({ isOpen, closeModal, currentProduct }
             />
           ))}
         </Row>
-        <Button type="primary" onClick={closeModal} style={buttonStyle}>
+        <Button type="primary" onClick={closeModal} style={buttonCancelStyle}>
           Cancel
         </Button>
-        <Button htmlType="submit" type="primary" style={buttonStyle}>
+        <Button htmlType="submit" type="primary" style={buttonOkStyle}>
           Submit
         </Button>
       </form>

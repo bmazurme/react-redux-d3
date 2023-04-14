@@ -8,14 +8,10 @@ import {
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import ModalCluster from '../ModalCluster';
-import showDeleteConfirm from '../showDeleteConfirm';
+import ShowDeleteConfirm from '../core/ShowDeleteConfirm/ShowDeleteConfirm';
 
-import makeDataSelector from '../../store/makeDataSelector';
 import { setClusters, setVersion } from '../../store';
-
-const clusterSelector = makeDataSelector('cluster');
-const groupSelector = makeDataSelector('group');
-const productSelector = makeDataSelector('product');
+import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
 
 export default function Clusters() {
   const dispatch = useDispatch();
@@ -62,7 +58,7 @@ export default function Clusters() {
                 size="small"
                 shape="circle"
                 icon={<DeleteOutlined />}
-                onClick={() => showDeleteConfirm(callback, cluster as Record<string, string | number>)}
+                onClick={() => ShowDeleteConfirm(callback, cluster as Record<string, string | number>)}
                 disabled={products.filter((x) => x.cluster === cluster.value).length > 0}
               />
             </Tooltip>
