@@ -85,22 +85,14 @@ export default function ModalEditProduct({ isOpen, closeModal, currentProduct }
             name={'cluster' as keyof FormPayload}
             control={control}
             render={({ field }) => (
-              <Select
-                {...field}
-                style={selectStyle}
-                options={clusters}
-              />
+              <Select {...field} style={selectStyle} options={clusters} />
             )}
           />
           <Controller
             name={'group' as keyof FormPayload}
             control={control}
             render={({ field }) => (
-              <Select
-                {...field}
-                style={selectStyle}
-                options={groups}
-              />
+              <Select {...field} style={selectStyle} options={groups} />
             )}
           />
           {inputs.map((input) => (
@@ -109,11 +101,7 @@ export default function ModalEditProduct({ isOpen, closeModal, currentProduct }
               name={input.name as keyof FormPayload}
               control={control}
               render={({ field }) => (
-                <Input
-                  {...field}
-                  {...input}
-                  style={{ margin: '8px 0' }}
-                />
+                <Input {...field} {...input} style={{ margin: '8px 0' }} />
               )}
             />
           ))}

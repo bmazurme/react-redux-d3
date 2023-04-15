@@ -29,8 +29,7 @@ export default function ModalGroupEdit({ isOpen, closeModal, currentGroup }
 
   const onSubmit = handleSubmit(async ({ group, cluster }) => {
     try {
-      const ids = currentGroup.children
-        .map((x: TypeNode) => x.attributes.id);
+      const ids = currentGroup.children.map((x: TypeNode) => x.attributes.id);
       const modProducts = products
         .map((x) => (ids.some((id: number) => id === x.id) ? { ...x, group, cluster } : x));
 
@@ -59,22 +58,14 @@ export default function ModalGroupEdit({ isOpen, closeModal, currentGroup }
           name={'cluster' as keyof FormPayload}
           control={control}
           render={({ field }) => (
-            <Select
-              {...field}
-              style={selectStyle}
-              options={clusters}
-            />
+            <Select {...field} style={selectStyle} options={clusters} />
           )}
         />
         <Controller
           name={'group' as keyof FormPayload}
           control={control}
           render={({ field }) => (
-            <Select
-              {...field}
-              style={selectStyle}
-              options={groups}
-            />
+            <Select {...field} style={selectStyle} options={groups} />
           )}
         />
         <Button type="primary" onClick={closeModal} style={buttonCancelStyle}>

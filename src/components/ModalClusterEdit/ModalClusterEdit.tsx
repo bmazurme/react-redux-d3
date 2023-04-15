@@ -61,11 +61,7 @@ export default function ModalClusterEdit({ isOpen, closeModal, currentCluster }
           name={'cluster' as keyof FormPayload}
           control={control}
           render={({ field }) => (
-            <Select
-              {...field}
-              style={selectStyle}
-              options={clusters}
-            />
+            <Select {...field} style={selectStyle} options={clusters} />
           )}
         />
         <Button type="primary" onClick={closeModal} style={buttonCancelStyle}>
