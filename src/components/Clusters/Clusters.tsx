@@ -8,7 +8,7 @@ import {
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import ModalCluster from '../ModalCluster';
-import ShowDeleteConfirm from '../core/ShowDeleteConfirm/ShowDeleteConfirm';
+import ShowDeleteConfirm from '../core/ShowDeleteConfirm';
 
 import {
   setClusters, setVersion,
@@ -17,6 +17,7 @@ import {
 
 export default function Clusters() {
   const dispatch = useDispatch();
+
   const [cltr, setCltr] = useState<{ value: string, label: string }>({ value: '', label: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const closeAddModal = () => setIsModalOpen(false);

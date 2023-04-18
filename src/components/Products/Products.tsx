@@ -7,7 +7,7 @@ import {
 } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-import ModalEditProduct from '../ModalEditProduct';
+import ModalProduct from '../ModalProduct';
 import ShowDeleteConfirm from '../core/ShowDeleteConfirm/ShowDeleteConfirm';
 
 import {
@@ -72,7 +72,7 @@ export default function Products() {
           </List.Item>
         )}
       />
-      <ModalEditProduct isOpen={isModalOpen} closeModal={closeAddModal} currentProduct={pr} />
+      <ModalProduct isOpen={isModalOpen} closeModal={closeAddModal} currentProduct={pr} />
     </>
   );
 }

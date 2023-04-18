@@ -30,7 +30,7 @@ const inputs = [
 const getId = (products: TypeProduct[]) => products.length
   ?? products.reduce((prev, cur) => (cur.id > prev.id ? cur : prev), { id: -Infinity }).id;
 
-export default function ModalEditProduct({ isOpen, closeModal, currentProduct }
+export default function ModalProduct({ isOpen, closeModal, currentProduct }
   : { isOpen: boolean, closeModal: () => void, currentProduct?: any }) {
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();

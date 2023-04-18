@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import type { StepsProps } from 'antd';
 import { Popover, Steps } from 'antd';
+import type { StepsProps } from 'antd';
 
 import {
   TypeVersion, setProducts, setGroups, setClusters,
@@ -20,7 +20,6 @@ export default function Versions() {
   const dispatch = useDispatch();
   const onChange = (value: number) => {
     setCurrent(value);
-
     dispatch(setProducts(versions[value].products));
     dispatch(setGroups(versions[value].groups));
     dispatch(setClusters(versions[value].clusters));

@@ -5,7 +5,7 @@ const buildTree = (
     products,
     clustersArray,
     groupsArray,
-  } : {
+  }: {
     clusters: TypeCluster[],
     groups: TypeGroup[],
     products: TypeProduct[],

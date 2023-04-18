@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Card } from 'antd';
 import {
-  EditOutlined, DeleteOutlined, EyeOutlined, EyeInvisibleOutlined,
+  PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, EyeInvisibleOutlined,
 } from '@ant-design/icons';
 
 import Tree from 'react-d3-tree';
 
-import ModalEditProduct from '../../ModalEditProduct';
+import ModalProduct from '../../ModalProduct';
 import ModalGroupEdit from '../../ModalGroupEdit';
 import ModalClusterEdit from '../../ModalClusterEdit';
 import ShowDeleteConfirm from '../ShowDeleteConfirm/ShowDeleteConfirm';
@@ -28,7 +28,9 @@ const containerStyles = { width: '100%', height: '100%', background: '#eee' };
 
 export default function TreeBlock() {
   const dispatch = useDispatch();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalProductOpen, setIsModalProductOpen] = useState(false);
   const [isModalGroupOpen, setIsModalGroupOpen] = useState(false);
   const [isModalClusterOpen, setIsModalClusterOpen] = useState(false);
   const [pr, setPr] = useState({
@@ -99,6 +101,8 @@ export default function TreeBlock() {
     return showModal(nodeDatum);
   };
 
+  const showModalProduct = () => setIsModalProductOpen(true);
+  const closeModalProduct = () => setIsModalProductOpen(false);
   const closeModal = () => setIsModalOpen(false);
   const closeModalGroup = () => setIsModalGroupOpen(false);
   const closeModalCluster = () => setIsModalClusterOpen(false);
@@ -110,11 +114,28 @@ export default function TreeBlock() {
           bordered={false}
           style={{ width: 250 }}
           actions={[
-            <>
-              {nodeDatum.__rd3t.collapsed
-                ? <EyeInvisibleOutlined onClick={toggleNode} key="invisible" />
-                : <EyeOutlined onClick={toggleNode} key="eye" />}
-            </>,
+            <Button
+              key="edit"
+              size="small"
+              shape="circle"
+              icon={(
+                <>
+                  {!nodeDatum.__rd3t.collapsed
+                    ? <EyeInvisibleOutlined key="invisible" />
+                    : <EyeOutlined key="eye" />}
+                </>
+              )}
+              onClick={toggleNode}
+              disabled={nodeDatum.attributes.type === 'product'}
+            />,
+            <Button
+              key="add"
+              size="small"
+              shape="circle"
+              icon={<PlusOutlined />}
+              onClick={() => showModalProduct()}
+              disabled={nodeDatum.attributes.type !== 'product'}
+            />,
             <Button
               key="edit"
               size="small"
@@ -150,7 +171,8 @@ export default function TreeBlock() {
           ...rd3tProps, foreignObjectProps,
         })}
       />
-      <ModalEditProduct isOpen={isModalOpen} closeModal={closeModal} currentProduct={pr} />
+      <ModalProduct isOpen={isModalProductOpen} closeModal={closeModalProduct} />
+      <ModalProduct isOpen={isModalOpen} closeModal={closeModal} currentProduct={pr} />
       <ModalGroupEdit isOpen={isModalGroupOpen} closeModal={closeModalGroup} currentGroup={grp} />
       {/* eslint-disable-next-line max-len */}
       <ModalClusterEdit isOpen={isModalClusterOpen} closeModal={closeModalCluster} currentCluster={cltr} />

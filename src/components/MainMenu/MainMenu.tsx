@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Col, Row } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
 
-import ModalEditProducts from '../ModalEditProduct';
+import ModalProducts from '../ModalProduct';
 import ModalGroup from '../ModalGroup';
 import ModalCluster from '../ModalCluster';
 
@@ -39,7 +39,7 @@ export default function Container({ heading }: { heading: string | undefined }) 
         <Col span={3}>{heading}</Col>
       </Row>
 
-      <ModalEditProducts isOpen={isModalOpen} closeModal={closeAddModal} />
+      <ModalProducts isOpen={isModalOpen} closeModal={closeAddModal} />
       <ModalGroup isOpen={isModalGroupOpen} closeModal={closeAddGroupModal} />
       <ModalCluster isOpen={isModalClusterOpen} closeModal={closeAddClusterModal} />
     </>
