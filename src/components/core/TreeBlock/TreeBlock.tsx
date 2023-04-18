@@ -15,8 +15,10 @@ import ModalClusterEdit from '../../ModalClusterEdit';
 import ShowDeleteConfirm from '../ShowDeleteConfirm/ShowDeleteConfirm';
 
 import { useCenteredTree, Point } from './helpers';
-import { setProducts, setVersion } from '../../../store';
-import { groupSelector, clusterSelector, productSelector } from '../../../store/selectors';
+import {
+  setProducts, setVersion,
+  selectCurrentGroup, selectCurrentCluster, selectCurrentProduct,
+} from '../../../store';
 
 import buildTree from './buildTree';
 
@@ -40,9 +42,9 @@ export default function TreeBlock() {
   const [cltr, setCltr] = useState<{ value: string, label: string, children: TypeNode[] }>({
     value: '', label: '', children: [],
   });
-  const products = useSelector(productSelector) as TypeProduct[];
-  const groups = useSelector(groupSelector) as TypeGroup[];
-  const clusters = useSelector(clusterSelector) as TypeCluster[];
+  const products = useSelector(selectCurrentProduct) as TypeProduct[];
+  const groups = useSelector(selectCurrentGroup) as TypeGroup[];
+  const clusters = useSelector(selectCurrentCluster) as TypeCluster[];
 
   const clustersArray = Array.from(new Set(products.map(({ cluster }) => cluster)));
   const groupsArray = Array.from(new Set(products.map(({ group }) => group)));

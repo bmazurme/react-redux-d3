@@ -4,8 +4,10 @@ import { useErrorHandler } from 'react-error-boundary';
 import { useForm, Controller } from 'react-hook-form';
 import { Button, Modal, Input } from 'antd';
 
-import { setCluster, setVersion, setClusters } from '../../store';
-import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+import {
+  setCluster, setVersion, setClusters,
+  selectCurrentGroup, selectCurrentCluster, selectCurrentProduct,
+} from '../../store';
 
 import { buttonOkStyle, buttonCancelStyle } from '../styleModal';
 
@@ -19,9 +21,9 @@ export default function ModalCluster({ isOpen, closeModal, currentCluster }
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
 
-  const clusters = useSelector(clusterSelector) as TypeCluster[];
-  const groups = useSelector(groupSelector) as TypeGroup[];
-  const products = useSelector(productSelector) as TypeProduct[];
+  const clusters = useSelector(selectCurrentCluster) as TypeCluster[];
+  const groups = useSelector(selectCurrentGroup) as TypeGroup[];
+  const products = useSelector(selectCurrentProduct) as TypeProduct[];
 
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: { value: '', label: '' },

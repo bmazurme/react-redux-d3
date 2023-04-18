@@ -10,8 +10,10 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import ModalGroup from '../ModalGroup';
 import ShowDeleteConfirm from '../core/ShowDeleteConfirm/ShowDeleteConfirm';
 
-import { setGroups, setVersion } from '../../store';
-import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+import {
+  setGroups, setVersion,
+  selectCurrentGroup, selectCurrentCluster, selectCurrentProduct,
+} from '../../store';
 
 export default function Groups() {
   const dispatch = useDispatch();
@@ -19,9 +21,9 @@ export default function Groups() {
   const [grp, setGrp] = useState({ value: '', label: '' });
   const closeAddModal = () => setIsModalOpen(false);
 
-  const clusters = useSelector(clusterSelector) as TypeCluster[];
-  const groups = useSelector(groupSelector) as TypeGroup[];
-  const products = useSelector(productSelector) as TypeProduct[];
+  const clusters = useSelector(selectCurrentCluster) as TypeCluster[];
+  const groups = useSelector(selectCurrentGroup) as TypeGroup[];
+  const products = useSelector(selectCurrentProduct) as TypeProduct[];
 
   const callback = (group: Record<string, string | number>) => {
     const arr = groups.filter(({ value }) => value !== group.value);

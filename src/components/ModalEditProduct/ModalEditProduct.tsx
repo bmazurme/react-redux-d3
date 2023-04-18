@@ -7,8 +7,10 @@ import {
   Button, Modal, Input, Select, Row,
 } from 'antd';
 
-import { setProducts, setVersion, setProduct } from '../../store';
-import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+import {
+  setProducts, setVersion, setProduct,
+  selectCurrentGroup, selectCurrentCluster, selectCurrentProduct,
+} from '../../store';
 
 import { buttonOkStyle, buttonCancelStyle, selectStyle } from '../styleModal';
 
@@ -33,9 +35,9 @@ export default function ModalEditProduct({ isOpen, closeModal, currentProduct }
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
 
-  const products = useSelector(productSelector) as TypeProduct[];
-  const groups = useSelector(groupSelector) as TypeGroup[];
-  const clusters = useSelector(clusterSelector) as TypeCluster[];
+  const products = useSelector(selectCurrentProduct) as TypeProduct[];
+  const groups = useSelector(selectCurrentGroup) as TypeGroup[];
+  const clusters = useSelector(selectCurrentCluster) as TypeCluster[];
 
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: {

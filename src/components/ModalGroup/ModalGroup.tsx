@@ -4,8 +4,10 @@ import { useErrorHandler } from 'react-error-boundary';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal, Input } from 'antd';
 
-import { setGroup, setVersion, setGroups } from '../../store';
-import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+import {
+  setGroup, setVersion, setGroups,
+  selectCurrentGroup, selectCurrentCluster, selectCurrentProduct,
+} from '../../store';
 
 import { buttonOkStyle, buttonCancelStyle } from '../styleModal';
 
@@ -19,9 +21,9 @@ export default function ModalGroup({ isOpen, closeModal, currentGroup }
   const errorHandler = useErrorHandler();
   const dispatch = useDispatch();
 
-  const groups = useSelector(groupSelector) as TypeGroup[];
-  const clusters = useSelector(clusterSelector) as TypeCluster[];
-  const products = useSelector(productSelector) as TypeProduct[];
+  const groups = useSelector(selectCurrentGroup) as TypeGroup[];
+  const clusters = useSelector(selectCurrentCluster) as TypeCluster[];
+  const products = useSelector(selectCurrentProduct) as TypeProduct[];
 
   const { control, handleSubmit, reset } = useForm<FormPayload>({
     defaultValues: { label: '', cluster: '' },

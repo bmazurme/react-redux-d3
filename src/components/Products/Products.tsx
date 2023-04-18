@@ -10,8 +10,10 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import ModalEditProduct from '../ModalEditProduct';
 import ShowDeleteConfirm from '../core/ShowDeleteConfirm/ShowDeleteConfirm';
 
-import { setProducts, setVersion } from '../../store';
-import { groupSelector, clusterSelector, productSelector } from '../../store/selectors';
+import {
+  setProducts, setVersion,
+  selectCurrentGroup, selectCurrentCluster, selectCurrentProduct,
+} from '../../store';
 
 export default function Products() {
   const dispatch = useDispatch();
@@ -24,9 +26,9 @@ export default function Products() {
     id: 0,
   });
 
-  const products = useSelector(productSelector) as TypeProduct[];
-  const groups = useSelector(groupSelector) as TypeGroup[];
-  const clusters = useSelector(clusterSelector) as TypeCluster[];
+  const products = useSelector(selectCurrentProduct) as TypeProduct[];
+  const groups = useSelector(selectCurrentGroup) as TypeGroup[];
+  const clusters = useSelector(selectCurrentCluster) as TypeCluster[];
 
   const callback = (product: Record<string, string | number>) => {
     const arr = products.filter(({ id }) => id !== product.id);
