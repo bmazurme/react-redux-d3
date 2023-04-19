@@ -1,3 +1,7 @@
+/* eslint-disable implicit-arrow-linebreak */
+const getSet = (products: TypeProduct[], item: string) =>
+  new Set(products.filter((x: TypeProduct) => item === x.cluster));
+
 const buildTree = (
   {
     clusters,
@@ -22,8 +26,7 @@ const buildTree = (
   children: clustersArray.map((item: string) => ({
     name: clusters.find((x: TypeCluster) => x.value === item)?.label ?? '',
     attributes: {
-      // eslint-disable-next-line max-len
-      count: Array.from(new Set(products.filter((x: TypeProduct) => item === x.cluster))).length ?? 0,
+      count: Array.from(getSet(products, item)).length ?? 0,
       groups: Array.from(new Set(products.filter((x: TypeProduct) => item === x.cluster)
         .map(({ group }) => group))).length ?? 0,
       id: item,
@@ -35,7 +38,6 @@ const buildTree = (
       attributes: {
         count: products.filter((x: TypeProduct) => item === x.cluster)
           .filter((x: TypeProduct) => g === x.group).length ?? 0,
-        // groups: '===',
         id: g,
         type: 'group',
       },
