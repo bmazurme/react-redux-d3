@@ -28,3 +28,6 @@ Implemented features:
 - [X] Add, edit, delete, rename product, group, cluster
 - [X] Build tree react // react-d3-tree
 - [X] History of changes
+
+### Links
+[react-d3-tree](https://www.npmjs.com/package/react-d3-tree)
