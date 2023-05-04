@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import initData from '../../mock/initVersions';
+import initData from '../../mock/init-versions';
 
 export type TypeVersion = {
   products: TypeProduct[];

@@ -7,8 +7,8 @@ import {
 } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-import ModalCluster from '../ModalCluster';
-import ShowDeleteConfirm from '../core/ShowDeleteConfirm';
+import ModalCluster from '../modal-cluster';
+import ShowDeleteConfirm from '../core/show-delete-confirm';
 
 import {
   setClusters, setVersion,

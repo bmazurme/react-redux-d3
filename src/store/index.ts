@@ -5,14 +5,14 @@ import { createReduxHistoryContext } from 'redux-first-history';
 import { createBrowserHistory, createMemoryHistory } from 'history';
 
 import { authApi } from './api';
-import userReducer from './slices/userSlice';
-import productReducer from './slices/productSlice';
-import versionReducer from './slices/versionSlice';
-import groupReducer from './slices/groupSlice';
-import clusterReducer from './slices/clusterSlice';
+import userReducer from './slices/user-slice';
+import productReducer from './slices/product-slice';
+import versionReducer from './slices/version-slice';
+import groupReducer from './slices/group-slice';
+import clusterReducer from './slices/cluster-slice';
 import { isServer } from '../utils';
 
-export * from './api/authApi/endpoints';
+export * from './api/auth-api/endpoints';
 export * from './slices';
 
 // global redeclared types

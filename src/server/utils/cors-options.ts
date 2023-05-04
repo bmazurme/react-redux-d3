@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import cors from 'cors';
 
-import { METHODS, ALLOWED_HEADERS, WHITE_LIST } from './constCors';
+import { METHODS, ALLOWED_HEADERS, WHITE_LIST } from './const-cors';
 
 const checkWhiteList: any = (origin: string, callback: any) => {
   if (WHITE_LIST.indexOf(origin) !== -1 || !origin) {

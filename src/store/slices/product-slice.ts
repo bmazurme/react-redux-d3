@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import initProduct from '../../mock/initialProduct';
+import initProduct from '../../mock/initial-product';
 
 export type ProductState = {
   data: TypeProduct[]

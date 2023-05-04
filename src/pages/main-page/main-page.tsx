@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TreeBlock from '../../components/core/TreeBlock';
+import TreeBlock from '../../components/core/tree-block';
 import Content from '../../components/core/Container';
 
 export default function MainPage() {

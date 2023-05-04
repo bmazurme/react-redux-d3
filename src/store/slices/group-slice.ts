@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import initGroups from '../../mock/initGroups';
+import initGroups from '../../mock/init-groups';
 
 export type GroupState = {
   data: TypeGroup[]

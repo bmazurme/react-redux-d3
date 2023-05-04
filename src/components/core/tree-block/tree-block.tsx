@@ -9,10 +9,10 @@ import {
 
 import Tree from 'react-d3-tree';
 
-import ModalProduct from '../../ModalProduct';
-import ModalGroupEdit from '../../ModalGroupEdit';
-import ModalClusterEdit from '../../ModalClusterEdit';
-import ShowDeleteConfirm from '../ShowDeleteConfirm/ShowDeleteConfirm';
+import ModalProduct from '../../modal-product';
+import ModalGroupEdit from '../../modal-group-edit';
+import ModalClusterEdit from '../../modal-cluster-edit';
+import ShowDeleteConfirm from '../show-delete-confirm/show-delete-confirm';
 
 import { useCenteredTree, Point } from './helpers';
 import {
@@ -20,7 +20,7 @@ import {
   selectCurrentGroup, selectCurrentCluster, selectCurrentProduct,
 } from '../../../store';
 
-import buildTree from './buildTree';
+import buildTree from './build-tree';
 
 type UseUserData = [Point, (v: HTMLDivElement | null) => void];
 

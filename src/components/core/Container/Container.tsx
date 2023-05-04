@@ -2,7 +2,7 @@ import React from 'react';
 import type { PropsWithChildren } from 'react';
 import { Layout, Space } from 'antd';
 
-import MainMenu from '../../MainMenu';
+import MainMenu from '../../main-menu';
 import Sidebar from '../Sidebar';
 import History from '../../Versions';
 

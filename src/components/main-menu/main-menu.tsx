@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Button, Col, Row } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
 
-import ModalProducts from '../ModalProduct';
-import ModalGroup from '../ModalGroup';
-import ModalCluster from '../ModalCluster';
+import ModalProducts from '../modal-product';
+import ModalGroup from '../modal-group';
+import ModalCluster from '../modal-cluster';
 
 export default function Container({ heading }: { heading: string | undefined }) {
   const [isModalOpen, setIsModalOpen] = useState(false);

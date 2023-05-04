@@ -1,7 +1,7 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 
-import getAxiosInstance from '../utils/axiosInstance';
+import getAxiosInstance from '../utils/axios-instance';
 import type { AppDispatch } from '.';
 
 interface CustomQueryArgs extends AxiosRequestConfig {

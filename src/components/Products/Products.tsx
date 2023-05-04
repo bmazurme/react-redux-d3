@@ -7,8 +7,8 @@ import {
 } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-import ModalProduct from '../ModalProduct';
-import ShowDeleteConfirm from '../core/ShowDeleteConfirm/ShowDeleteConfirm';
+import ModalProduct from '../modal-product';
+import ShowDeleteConfirm from '../core/show-delete-confirm/show-delete-confirm';
 
 import {
   setProducts, setVersion,

@@ -9,9 +9,9 @@ import { config as dotEnvConfig } from 'dotenv';
 import cors from 'cors';
 
 import { requestLogger, errorLogger } from './middlewares/logger';
-import errorHandler from './middlewares/errorHandler';
+import errorHandler from './middlewares/error-handler';
 
-import corsOptions from './utils/corsOptions';
+import corsOptions from './utils/cors-options';
 
 import { NotFoundError } from './errors';
 

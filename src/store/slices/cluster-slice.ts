@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
 
-import initClusters from '../../mock/initClusters';
+import initClusters from '../../mock/init-clusters';
 
 export type ClusterState = {
   data: TypeCluster[]
