@@ -4,7 +4,7 @@ import { Tabs } from 'antd';
 
 import Products from '../../Products';
 import Groups from '../../Groups';
-import Clusters from '../../Clusters';
+import Clusters from '../../_clusters';
 
 export default function Sidebar() {
   return (
