@@ -3,7 +3,7 @@ import React from 'react';
 import { Tabs } from 'antd';
 
 import Products from '../../Products';
-import Groups from '../../Groups';
+import Groups from '../../_groups';
 import Clusters from '../../clusters';
 
 export default function Sidebar() {
