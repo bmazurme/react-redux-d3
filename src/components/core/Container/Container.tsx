@@ -4,7 +4,7 @@ import { Layout, Space } from 'antd';
 
 import MainMenu from '../../main-menu';
 import Sidebar from '../Sidebar';
-import History from '../../_versions';
+import History from '../../versions';
 
 import {
   headerStyle, contentStyle, siderStyle, footerStyle, containerStyle,
