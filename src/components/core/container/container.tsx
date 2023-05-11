@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react';
 import { Layout, Space } from 'antd';
 
 import MainMenu from '../../main-menu';
-import Sidebar from '../Sidebar';
+import Sidebar from '../sidebar';
 import History from '../../versions';
 
 import {
