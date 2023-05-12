@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Tabs } from 'antd';
 
-import Products from '../../Products';
+import Products from '../../products';
 import Groups from '../../groups';
 import Clusters from '../../clusters';
 
