@@ -9,20 +9,27 @@
 
 ### Installation
 Clone the repository on your computer:
+```bash
+# git clone ...
 
-`git clone ...`
+# install dependencies
+$ npm install
 
-Install dependencies: `npm install`
+# run dev mode
+$ npm run dev
 
-Run dev mode: `npm run dev`
+# build project
+$ npm run build
 
-Build project: `npm run build`
+# clear project
+$ npm run clear
 
-Clear project: `npm run clear`
+# run eslint
+$ npm run eslint
 
-Run eslint: `npm run eslint`
-
-Launch: `npm start`
+# launch
+$ npm start
+```
 
 Implemented features:
 - [X] Add, edit, delete, rename product, group, cluster
