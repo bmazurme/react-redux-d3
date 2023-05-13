@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import MainPage from './pages/main-page';
 
-import ErrorBoundaryWrapper from './components/core/error-boundary-wrapper';
+import ErrorBoundaryWrapper from './components/error-boundary-wrapper';
 
 export default function App() {
   return (

@@ -9,16 +9,16 @@ import {
 
 import Tree from 'react-d3-tree';
 
-import ModalProduct from '../../modal-product';
-import ModalGroupEdit from '../../modal-group-edit';
-import ModalClusterEdit from '../../modal-cluster-edit';
+import ModalProduct from '../modal-product';
+import ModalGroupEdit from '../modal-group-edit';
+import ModalClusterEdit from '../modal-cluster-edit';
 import ShowDeleteConfirm from '../show-delete-confirm/show-delete-confirm';
 
 import { useCenteredTree, Point } from './helpers';
 import {
   setProducts, setVersion,
   selectCurrentGroup, selectCurrentCluster, selectCurrentProduct,
-} from '../../../store';
+} from '../../store';
 
 import buildTree from './build-tree';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import TreeBlock from '../../components/core/tree-block';
-import Content from '../../components/core/container';
+import TreeBlock from '../../components/tree-block';
+import Content from '../../components/container';
 
 export default function MainPage() {
   return (

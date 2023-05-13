@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Tabs } from 'antd';
 
-import Products from '../../products';
-import Groups from '../../groups';
-import Clusters from '../../clusters';
+import Products from '../products';
+import Groups from '../groups';
+import Clusters from '../clusters';
 
 export default function Sidebar() {
   return (
